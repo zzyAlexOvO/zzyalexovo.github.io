@@ -1,0 +1,327 @@
+{
+  "game": {
+    "levelcount": 1,
+    "screensize": [
+      1280,
+      800
+    ]
+  },
+  "levels": {
+    "1": {
+      "height":800,
+      "width": 3000,
+      "gravity": 0.1,
+      "max_speed": 1.0,
+      "accelerate": 0.1,
+      "landscape": {
+        "height": 700.0,
+        "width": 3000.0,
+        "image": "/landscape_0003_4_mountain.png"
+      },
+      "floor": {
+        "image": "/floor.png",
+        "height": 700.0
+      },
+      "hero": {
+        "image": "/pacman2.png",
+        "Size": "Medium",
+        "x": 10.0,
+        "y": 200.0
+      },
+      "enemies": [
+        {
+          "images": ["/slimeBa.png","/slimeBb.png"],
+          "x": 1200.0,
+          "y": 600.0,
+          "height": 40.0,
+          "width": 53.0
+      },
+        {
+          "images": ["/slimeGa.png","/slimeGb.png"],
+          "x": 1500.0,
+          "y": 600.0,
+          "height": 40.0,
+          "width": 53.0
+        },
+        {
+          "images": ["/slimePa.png","/slimePb.png"],
+          "x": 1800.0,
+          "y": 600.0,
+          "height": 40.0,
+          "width": 53.0
+        },
+        {
+          "images": ["/slimeRa.png","/slimeRb.png"],
+          "x": 2000.0,
+          "y": 600.0,
+          "height": 40.0,
+          "width": 53.0
+        },
+        {
+          "images": ["/slimeYa.png","/slimeYb.png"],
+          "x": 2400.0,
+          "y": 600.0,
+          "height": 40.0,
+          "width": 53.0
+        }
+      ],
+      "clouds": [
+        {
+          "image": "/extra_cloud1.png",
+          "x": 0.0,
+          "y": 0.0,
+          "height": 54.0,
+          "width": 90.0
+        },
+        {
+          "image": "/extra_cloud2.png",
+          "x": 100.0,
+          "y": 50.0,
+          "height": 56.0,
+          "width": 106.0
+        },
+        {
+          "image": "/extra_cloud3.png",
+          "x": 200.0,
+          "y": 0.0,
+          "height": 58.0,
+          "width": 110.0
+        },
+        {
+          "image": "/extra_cloud4.png",
+          "x": 300.0,
+          "y": 50.0,
+          "height": 48.0,
+          "width": 83.0
+        },
+        {
+          "image": "/extra_cloud5.png",
+          "x": 400.0,
+          "y": 0.0,
+          "height": 26.0,
+          "width": 37.0
+        },
+        {
+          "image": "/extra_cloud6.png",
+          "x": 500.0,
+          "y": 50.0,
+          "height": 39.0,
+          "width": 80.0
+        },
+        {
+          "image": "/extra_cloud7.png",
+          "x": 600.0,
+          "y": 0.0,
+          "height": 41.0,
+          "width": 139.0
+        },
+        {
+          "image": "/extra_cloud1.png",
+          "x": 700.0,
+          "y": 0.0,
+          "height": 54.0,
+          "width": 90.0
+        },
+        {
+          "image": "/extra_cloud2.png",
+          "x": 800.0,
+          "y": 50.0,
+          "height": 56.0,
+          "width": 106.0
+        },
+        {
+          "image": "/extra_cloud3.png",
+          "x": 900.0,
+          "y": 0.0,
+          "height": 58.0,
+          "width": 110.0
+        },
+        {
+          "image": "/extra_cloud4.png",
+          "x": 1000.0,
+          "y": 50.0,
+          "height": 48.0,
+          "width": 83.0
+        },
+        {
+          "image": "/extra_cloud5.png",
+          "x": 1100.0,
+          "y": 0.0,
+          "height": 26.0,
+          "width": 37.0
+        },
+        {
+          "image": "/extra_cloud6.png",
+          "x": 1200.0,
+          "y": 50.0,
+          "height": 39.0,
+          "width": 80.0
+        },
+        {
+          "image": "/extra_cloud7.png",
+          "x": 1300.0,
+          "y": 0.0,
+          "height": 41.0,
+          "width": 139.0
+        },
+        {
+          "image": "/extra_cloud1.png",
+          "x": 1400.0,
+          "y": 0.0,
+          "height": 54.0,
+          "width": 90.0
+        },
+        {
+          "image": "/extra_cloud2.png",
+          "x": 1500.0,
+          "y": 50.0,
+          "height": 56.0,
+          "width": 106.0
+        },
+        {
+          "image": "/extra_cloud3.png",
+          "x": 1600.0,
+          "y": 0.0,
+          "height": 58.0,
+          "width": 110.0
+        },
+        {
+          "image": "/extra_cloud4.png",
+          "x": 1700.0,
+          "y": 50.0,
+          "height": 48.0,
+          "width": 83.0
+        },
+        {
+          "image": "/extra_cloud5.png",
+          "x": 1800.0,
+          "y": 0.0,
+          "height": 26.0,
+          "width": 37.0
+        },
+        {
+          "image": "/extra_cloud6.png",
+          "x": 1900.0,
+          "y": 50.0,
+          "height": 39.0,
+          "width": 80.0
+        },
+        {
+          "image": "/extra_cloud7.png",
+          "x": 2000.0,
+          "y": 0.0,
+          "height": 41.0,
+          "width": 139.0
+        },
+        {
+          "image": "/extra_cloud1.png",
+          "x": 2100.0,
+          "y": 0.0,
+          "height": 54.0,
+          "width": 90.0
+        },
+        {
+          "image": "/extra_cloud2.png",
+          "x": 2200.0,
+          "y": 50.0,
+          "height": 56.0,
+          "width": 106.0
+        },
+        {
+          "image": "/extra_cloud3.png",
+          "x": 2300.0,
+          "y": 0.0,
+          "height": 58.0,
+          "width": 110.0
+        },
+        {
+          "image": "/extra_cloud4.png",
+          "x": 2400.0,
+          "y": 50.0,
+          "height": 48.0,
+          "width": 83.0
+        },
+        {
+          "image": "/extra_cloud5.png",
+          "x": 2500.0,
+          "y": 0.0,
+          "height": 26.0,
+          "width": 37.0
+        },
+        {
+          "image": "/extra_cloud6.png",
+          "x": 2600.0,
+          "y": 50.0,
+          "height": 39.0,
+          "width": 80.0
+        },
+        {
+          "image": "/extra_cloud7.png",
+          "x": 2700.0,
+          "y": 0.0,
+          "height": 41.0,
+          "width": 139.0
+        }
+      ],
+      "flag": {
+        "image": "/flag.png",
+        "x": 3000.0,
+        "y": 620.0,
+        "height": 160.0,
+        "width": 96.4
+      },
+      "platforms": [
+        {"image": "/foot_tile.png",
+        "x": 1200.0,
+        "y": 500.0,
+        "height": 40.0,
+        "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1320.0,
+          "y": 500.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1360.0,
+          "y": 500.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1400.0,
+          "y": 500.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1440.0,
+          "y": 500.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1480.0,
+          "y": 500.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/foot_tile.png",
+          "x": 1400.0,
+          "y": 380.0,
+          "height": 40.0,
+          "width": 40.0},
+        {"image": "/pipe.png",
+          "x": 1600.0,
+          "y": 605.0,
+          "height": 120.0,
+          "width": 120.0},
+        {"image": "/mid_pipe.png",
+          "x": 2000.0,
+          "y": 550.0,
+          "height": 147.0,
+          "width": 85.0},
+        {"image": "/mid_pipe.png",
+          "x": 2400.0,
+          "y": 550.0,
+          "height": 147.0,
+          "width": 85.0}
+      ]
+    }
+  }
+}

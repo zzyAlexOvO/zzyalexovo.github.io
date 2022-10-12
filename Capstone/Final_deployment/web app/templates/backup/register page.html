@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" ">
+    <style>body{
+      background-image: url("images/bg-01.jpg");
+      background-repeat: no-repeat, repeat;
+      background-size: cover;
+          } 
+      
+      div{margin-top:10px;}
+        </style>
+  </head>
+  <body>
+    <div class="container">
+      
+      <div class="col align-items-end">
+        
+      
+      <div class="row  col-md-12 offset-md-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading text-center">
+            <h1>Registration</h1>
+          </div>
+          <div class="panel-body">
+            <form id="form" action="./register" method="post">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  name="firstName"
+                />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  name="lastName"
+                />
+              </div>
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <div>
+                  <label for="male" class="radio-inline"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="m"
+                      id="male"
+                    />Male</label
+                  >
+                  <label for="female" class="radio-inline"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="f"
+                      id="female"
+                    />Female</label
+                  >
+                  <label for="others" class="radio-inline"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="o"
+                      id="others"
+                    />Others</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  maxLength="50" value="" onblur="__changeUserName('email');"
+                />
+              <p> Please make sure your email address is correct </p>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  minLength="6" maxLength="20" value="" onblur="checkPwd1(this.value);"
+                />
+              <p>6 to 20 case-sensitive letters, symbols, or numbers </p>
+              </div>
+              <div class="form-group">
+                <label for="number">Phone Number</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="number"
+                  name="number"
+                  minLength="8" maxLength="14"
+                />
+              </div>
+              <!-- <input type="submit" class="btn btn-primary" /> -->
+
+              <div class="form-group">
+                  <input type="submit" value="Sign Up" class="btn btn-primary btn-block" >
+              </div>
+              <div id="div_submit" class="div_submit">
+                <div class="form-group text-center">
+                Already have an account?  <a href="/login" >Sign In </a>
+                </div>
+              </div>
+                  </div>
+                </span>
+              </div>
+            </form>
+          </div>
+          <script type="text/javascript">
+            function __changeUserName(of){
+              var username=$('#'+of).val();
+              if(of=='email'){
+                if (username.search(/[\w]+(\.[\w]+)*@[\w]+(\.[\w])+/) == -1) {
+                  showTooltips('email_input','请输入正确的Email地址');
+                  return;
+              }
+              }
+              else{
+                if(username=='' || !isMobilePhone(username)) {
+                  showTooltips('mobile_input','请输入正确的手机号码');
+                  return;
+                }
+              }
+            }
+            function checkPwd1(pwd1) {
+              if (pwd1.search(/^.{6,20}$/) == -1) {
+                showTooltips('password1_input','密码为空或位数太少');
+              }else {
+                hideTooltips('password1_input');
+              }
+            }
+            function checkName1(pwd2) {
+              if (pwd2.search(/^.{6,20}$/) == -1) {
+                showTooltips('name1_input','用户名为空或位数太少');
+              }else {
+                hideTooltips('name1_input');
+              }
+            }
+            function checkEmail(email) {
+              if (email.search(/^.+@.+$/) == -1) {
+                showTooltips('email_input','邮箱格式不正确');
+              }else {
+                hideTooltips('email_input');
+              }
+            }
+            
+            // 检查函数
+            function check() {
+              hideAllTooltips();
+              var ckh_result = true;
+              if ($('#email').val() == '' || $('#email').val().search(/^.+@.+$/) == -1) {
+              showTooltips('email_input','邮箱为空或格式不正确');
+              ckh_result = false;
+              }
+              if ($('#password1').val() == '' || $('#password1').val().search(/^.{6,20}$/) == -1) {
+              showTooltips('password1_input','密码为空或者长度不够');
+              ckh_result = false;
+              }
+              if ($('#name1').val() == '' || $('#name1').val().search(/^.{6,20}$/) == -1) {
+              showTooltips('name1_input','用户名为空或者格式不正确');
+              ckh_result = false;
+              }
+              if (document.getElementById("verify").checked==false) {
+              showTooltips('CheckBox_input','请勾选准则，表示同意平台的规则');
+              ckh_result = false;
+              }
+            
+              return ckh_result;
+            }
+            
+            </script>          
+        </div>
+      </div>
+    </div>
+    </div>
+    
+  </body>
+</html>

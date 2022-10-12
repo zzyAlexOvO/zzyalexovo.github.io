@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login setdose</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link href="{{url_for('static', filename='images/icons/favicon.ico')}}" rel="icon">
+	<link href="{{url_for('static', filename='css/util.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='css/main_log.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/animate/animate.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/animsition/css/animsition.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/select2/select2.min.css')}}" rel="stylesheet">
+	<link href="{{url_for('static', filename='vendor/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+<!--===============================================================================================-->	
+	<link href="{{url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js')}}" >
+	<link href="{{url_for('static', filename='vendor/animsition/js/animsition.min.js')}}" >
+	<link href="{{url_for('static', filename='vendor/bootstrap/js/popper.js')}}">
+	<link href="{{url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js')}}">
+	<link href="{{url_for('static', filename='vendor/select2/select2.min.js')}}" >
+	<link href="{{url_for('static', filename='vendor/daterangepicker/moment.min.js')}}" >
+	<link href="{{url_for('static', filename='vendor/daterangepicker/daterangepicker.js')}}" >
+	<link href="{{url_for('static', filename='vendor/countdowntime/countdowntime.js')}}">
+	<link href="{{url_for('static', filename='js/main.js')}}" >
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="./static/images/icons/favicon.ico">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="./static/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="./static/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="./static/css/util.css">
+	<link rel="stylesheet" type="text/css" href="./static/css/main_log.css">
+<!--===============================================================================================-->
+</head>
+
+<body>
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('./static/images/bg-01.jpg');">
+			<img src="./static/images/logo.svg" alt="usyd logo" width="300" height="200">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+			<div class="wrap-login100 p-t-32 p-b-52">
+				<span class="login100-form-title p-b-44">
+					Account Login
+				</span>
+
+				<!-- <form action="/static/login/1" method="post">
+					<div class="form-group">
+						<input type="text" name="username" class="form-control"  placeholder="Username" >
+					</div>
+					
+					<div class="form-group">
+						<input type="text" name="password" class="form-control"  placeholder="Password" >
+					</div>
+					 <div class="form-group">
+						<input type="submit" value="Login" class="btn btn-primary btn-block" >
+					</div>
+				</form>
+
+					<div class="form-group text-center">
+						Don't have an account?  <a type="submit" href="/register">Sign Up</a>
+					</div> -->
+
+				<form class="login100-form validate-form p-b-33 p-t-5" action="/login" method="post">
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<input class="input100" type="email" name="email" placeholder="Email">
+						<span class="focus-input100" data-placeholder="&#xe82a;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" name="password" placeholder="Password" minLength="6" maxLength="20">
+						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
+					</div>
+
+					<div class="container-login100-form-btn m-t-32">
+						<button class="login100-form-btn">
+							Login
+						</button>
+					</div>
+				</form>
+
+					<!-- <div class="form-group text-center">
+						Don't have an account?  <a type="submit" href="/register">Sign Up</a>
+					</div> -->
+					<div class="form-group text-center p-t-32" style="color:#FFFFFF">
+						Don't have an account?  <a style="color:#CCCCFF" type="submit" href="./register">Sign Up</a>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<div id="dropDownSelect1"></div>
+	
+<!--===============================================================================================-->
+	<script src="./static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/vendor/bootstrap/js/popper.js"></script>
+	<script src="./static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/vendor/daterangepicker/moment.min.js"></script>
+	<script src="./static/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="./static/js/main.js"></script>
+
+</body>
+</html>
