@@ -1,0 +1,2 @@
+# Description
+This is the repository containing most of the projects I have done. Currently it basically only has the projects I did during my university. Hopefully there would be more projects I develop by my own in the future.
