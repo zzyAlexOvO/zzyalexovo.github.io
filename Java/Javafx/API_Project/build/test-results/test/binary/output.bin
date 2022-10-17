@@ -1,0 +1,65 @@
+set language to english
+no cache hit
+$2022-06-17T10:44:45.13185660010:00
+	set language to english
+
+find character
+
+no cache hit
+Removed existing DB file.
+"A new database has been created.
+Created tables
+*INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+Removed existing DB file.
+"A new database has been created.
+Created tables
+Removed existing DB file.
+"A new database has been created.
+Created tables
+*INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+UPDATE caches
+SET info = ?
+)WHERE type = ? and id = ? and name = ?;
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+Removed existing DB file.
+"A new database has been created.
+Created tables
+*INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+

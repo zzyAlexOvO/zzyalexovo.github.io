@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.controllers</a> &gt; <span class="el_source">SearchController.java</span></div><h1>SearchController.java</h1><pre class="source lang-java linenums">package app.controllers;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+<span class="nc" id="L20">public class SearchController extends ControllerImpl{</span>
+    @FXML
+    Label search_description;
+    @FXML
+    Button search;
+    @FXML
+    Button clearCache;
+    @FXML
+    FlowPane breadcrumbArea;
+    @FXML
+    TableView table;
+    public class Character{
+        private int id;
+        private String name;
+<span class="nc" id="L34">        public Character(int id, String name){</span>
+<span class="nc" id="L35">            this.id = id;</span>
+<span class="nc" id="L36">            this.name = name;</span>
+<span class="nc" id="L37">        }</span>
+
+        public String getName() {
+<span class="nc" id="L40">            return name;</span>
+        }
+
+        public int getId() {
+<span class="nc" id="L44">            return id;</span>
+        }
+    }
+
+    @FXML
+    void searchEvent() throws ExecutionException, InterruptedException {
+<span class="nc" id="L50">        TextField textField = (TextField) scene.lookup(&quot;#inputPattern&quot;);</span>
+<span class="nc" id="L51">        String pattern = textField.getText();</span>
+<span class="nc" id="L52">        Task task = new Task&lt;&gt;() {</span>
+            public Object call() {
+<span class="nc" id="L54">                Map&lt;Integer, String&gt; characters = null;</span>
+                try {
+<span class="nc" id="L56">                    characters = engine.characters(pattern);</span>
+<span class="nc" id="L57">                    fill(characters);</span>
+<span class="nc" id="L58">                } catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L59">                    e.printStackTrace();</span>
+<span class="nc" id="L60">                }</span>
+<span class="nc" id="L61">                return characters;</span>
+            }
+        };
+
+<span class="nc" id="L65">        new Thread(task).start();</span>
+<span class="nc" id="L66">    }</span>
+
+    void fill(Map&lt;Integer,String&gt; characters){
+
+<span class="nc" id="L70">        table.getColumns().clear();</span>
+
+<span class="nc" id="L72">        ObservableList&lt;Character&gt; tvObservableList = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (Map.Entry&lt;Integer,String&gt; character: characters.entrySet()){</span>
+<span class="nc" id="L74">            tvObservableList.add(new Character( character.getKey(), character.getValue()));</span>
+<span class="nc" id="L75">        }</span>
+<span class="nc" id="L76">        table.setItems(tvObservableList);</span>
+<span class="nc" id="L77">        TableColumn&lt;Character, Integer&gt; col1 = new TableColumn&lt;&gt;(&quot;id&quot;);</span>
+<span class="nc" id="L78">        col1.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;id&quot;));</span>
+<span class="nc" id="L79">        TableColumn&lt;Character, String&gt; col2 = new TableColumn&lt;&gt;(engine.getResource(&quot;name&quot;));</span>
+<span class="nc" id="L80">        col2.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;name&quot;));</span>
+<span class="nc" id="L81">        table.getColumns().addAll(col1,col2);</span>
+
+<span class="nc" id="L83">        TableColumn&lt;Character, Void&gt; colBtn = new TableColumn(engine.getResource(&quot;detail&quot;));</span>
+
+<span class="nc" id="L85">        Callback&lt;TableColumn&lt;Character, Void&gt;, TableCell&lt;Character, Void&gt;&gt; cellFactory = new Callback&lt;&gt;() {</span>
+            @Override
+            public TableCell&lt;Character, Void&gt; call(final TableColumn&lt;Character, Void&gt; param) {
+<span class="nc" id="L88">                final TableCell&lt;Character, Void&gt; cell = new TableCell&lt;&gt;() {</span>
+
+<span class="nc" id="L90">                    private final Button btn = new Button(engine.getResource(&quot;view&quot;));</span>
+
+                    {
+<span class="nc" id="L93">                        btn.setOnAction((ActionEvent event) -&gt; {</span>
+<span class="nc" id="L94">                            Character data = getTableView().getItems().get(getIndex());</span>
+                            try {
+<span class="nc" id="L96">                                engine.getDBManager().insertItem(&quot;character&quot;,data.name, data.id);</span>
+<span class="nc" id="L97">                                engine.findCharacter(data.id);</span>
+<span class="nc" id="L98">                            } catch (IOException | NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L99">                                e.printStackTrace();</span>
+<span class="nc" id="L100">                            }</span>
+<span class="nc" id="L101">                        });</span>
+<span class="nc" id="L102">                    }</span>
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+<span class="nc" id="L106">                        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                        if (empty) {</span>
+<span class="nc" id="L108">                            setGraphic(null);</span>
+                        } else {
+<span class="nc" id="L110">                            setGraphic(btn);</span>
+                        }
+<span class="nc" id="L112">                    }</span>
+                };
+<span class="nc" id="L114">                return cell;</span>
+            }
+        };
+
+<span class="nc" id="L118">        colBtn.setCellFactory(cellFactory);</span>
+
+<span class="nc" id="L120">        table.getColumns().add(colBtn);</span>
+
+<span class="nc" id="L122">    }</span>
+
+    public void fillBreadcrumb(List&lt;Hyperlink&gt; links){
+<span class="nc" id="L125">        initLanguages();</span>
+<span class="nc" id="L126">        setMenuText();</span>
+<span class="nc" id="L127">        setText();</span>
+<span class="nc bnc" id="L128" title="All 4 branches missed.">        if (links == null || links.size() == 0){</span>
+<span class="nc" id="L129">            System.out.println(&quot;Null, return&quot;);</span>
+<span class="nc" id="L130">            return;</span>
+        }else{
+<span class="nc bnc" id="L132" title="All 2 branches missed.">            for (Hyperlink link: links){</span>
+<span class="nc" id="L133">                breadcrumbArea.getChildren().add(link);</span>
+<span class="nc" id="L134">                breadcrumbArea.getChildren().add(new Text(&quot;&gt;&quot;));</span>
+<span class="nc" id="L135">            }</span>
+        }
+<span class="nc" id="L137">    }</span>
+
+    @FXML
+    public void clearCache(){
+<span class="nc" id="L141">        engine.clearCache();</span>
+<span class="nc" id="L142">    }</span>
+
+    @Override
+    public void setText(){
+<span class="nc" id="L146">        search_description.setText(engine.getResource(search_description.getText()));</span>
+<span class="nc" id="L147">        search.setText(engine.getResource(search.getText()));</span>
+<span class="nc" id="L148">        clearCache.setText(engine.getResource(clearCache.getText()));</span>
+<span class="nc" id="L149">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

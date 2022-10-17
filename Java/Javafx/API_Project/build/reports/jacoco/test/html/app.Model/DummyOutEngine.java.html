@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DummyOutEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model</a> &gt; <span class="el_source">DummyOutEngine.java</span></div><h1>DummyOutEngine.java</h1><pre class="source lang-java linenums">package app.model;
+
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
+import java.io.IOException;
+
+public class DummyOutEngine extends DummyEngine {
+    private String fromEmail;
+    private EmailManager emailManager;
+    public DummyOutEngine(Stage stage, String fromEmail,String emailKey){
+<span class="nc" id="L11">        super(stage);</span>
+<span class="nc" id="L12">        this.fromEmail = fromEmail;</span>
+<span class="nc" id="L13">        this.emailManager = new EmailManager(emailKey);</span>
+<span class="nc" id="L14">    }</span>
+
+    @Override
+    public void sendReport(String content) throws IOException {
+<span class="nc" id="L18">        System.out.println(content);</span>
+<span class="nc" id="L19">        TextInputDialog td = new TextInputDialog();</span>
+<span class="nc" id="L20">        td.setHeaderText(super.getLanguageManager().getResource(&quot;emailDescription&quot;));</span>
+<span class="nc" id="L21">        td.showAndWait();</span>
+<span class="nc" id="L22">        emailManager.send(fromEmail,td.getResult(),&quot;Report&quot;,content);</span>
+<span class="nc" id="L23">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

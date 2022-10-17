@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OnlineEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model</a> &gt; <span class="el_source">OnlineEngine.java</span></div><h1>OnlineEngine.java</h1><pre class="source lang-java linenums">package app.model;
+
+import app.model.exception.CharacterNotFoundException;
+import app.view.AlertFactory;
+import app.view.ViewFactory;
+import app.model.utils.Hash;
+import app.model.utils.Routes;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.http.HttpResponse;
+import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class OnlineEngine implements Engine {
+    public final String publicKey;
+    public final String privateKey;
+
+    public ViewFactory viewFactory;
+    private BgmManager bgmManager;
+    private DBmanager dBmanager;
+    private Routes routes;
+    private EmailManager emailManager;
+    private LanguageManager languageManager;
+    private BreadcrumbObserver breadcrumb;
+
+    private ThresholdListener thresholdListener;
+    private AlertFactory alertFactory;
+
+    private String fromEmail;
+<span class="nc" id="L44">    public OnlineEngine(Stage stage, Routes routes, String publicKey, String privateKey, String fromEmail,String emailKey){</span>
+<span class="nc" id="L45">        this.viewFactory = new ViewFactory(this,stage);</span>
+<span class="nc" id="L46">        this.emailManager = new EmailManager(emailKey);</span>
+<span class="nc" id="L47">        this.dBmanager = new DBmanager();</span>
+<span class="nc" id="L48">        this.bgmManager = new BgmManager();</span>
+<span class="nc" id="L49">        this.breadcrumb = new BreadcrumbObserver();</span>
+<span class="nc" id="L50">        this.routes = routes;</span>
+<span class="nc" id="L51">        this.publicKey = publicKey;</span>
+<span class="nc" id="L52">        this.privateKey = privateKey;</span>
+<span class="nc" id="L53">        this.fromEmail = fromEmail;</span>
+<span class="nc" id="L54">        this.languageManager = new LanguageManager();</span>
+
+<span class="nc" id="L56">        this.thresholdListener = new ThresholdListener();</span>
+<span class="nc" id="L57">        this.alertFactory = new AlertFactory(languageManager);</span>
+<span class="nc" id="L58">    }</span>
+<span class="fc" id="L59">    public OnlineEngine(ViewFactory viewFactory,AlertFactory alertFactory, EmailManager emailManager, BgmManager bgmManager,DBmanager dBmanager, Routes routes, String publicKey, String privateKey){</span>
+<span class="fc" id="L60">        this.viewFactory = viewFactory;</span>
+<span class="fc" id="L61">        this.emailManager = emailManager;</span>
+<span class="fc" id="L62">        this.bgmManager = bgmManager;</span>
+<span class="fc" id="L63">        this.dBmanager = dBmanager;</span>
+<span class="fc" id="L64">        this.routes = routes;</span>
+<span class="fc" id="L65">        this.publicKey = publicKey;</span>
+<span class="fc" id="L66">        this.privateKey = privateKey;</span>
+<span class="fc" id="L67">        this.languageManager = new LanguageManager();</span>
+<span class="fc" id="L68">        this.breadcrumb = new BreadcrumbObserver();</span>
+
+<span class="fc" id="L70">        this.thresholdListener = new ThresholdListener();</span>
+<span class="fc" id="L71">        this.alertFactory = alertFactory;</span>
+<span class="fc" id="L72">    }</span>
+    public void start() throws IOException {
+        //dBmanager.removeDB();
+<span class="fc" id="L75">        dBmanager.createDB();</span>
+<span class="fc" id="L76">        dBmanager.setupDB();</span>
+<span class="fc" id="L77">        bgmManager.setup();</span>
+<span class="fc" id="L78">        languageManager.initLanguages();</span>
+<span class="fc" id="L79">        setLanguage(&quot;english&quot;);</span>
+<span class="fc" id="L80">        loadingLoad();</span>
+<span class="fc" id="L81">    }</span>
+    @Override
+    public AlertFactory getAlertFactory(){
+<span class="nc" id="L84">        return this.alertFactory;</span>
+    }
+    public void pauseMusic(){
+<span class="fc" id="L87">        bgmManager.pause();</span>
+<span class="fc" id="L88">    }</span>
+    public void playMusic(){
+<span class="fc" id="L90">        bgmManager.play();</span>
+<span class="fc" id="L91">    }</span>
+    public void thresholdLoad() throws IOException {
+<span class="nc" id="L93">        viewFactory.buildThreshold();</span>
+<span class="nc" id="L94">    }</span>
+    public void loadingLoad() throws IOException {
+<span class="fc" id="L96">        viewFactory.buildLoading();</span>
+<span class="fc" id="L97">    }</span>
+
+    public void searchLoad() throws IOException {
+<span class="nc" id="L100">        viewFactory.buildSearch();</span>
+<span class="nc" id="L101">    }</span>
+
+    public List&lt;Hyperlink&gt; getBreadcrumb(){
+<span class="nc" id="L104">        return this.breadcrumb.get();</span>
+    }
+
+    public Map&lt;Integer,String&gt; characters(String pattern) throws NoSuchAlgorithmException {
+<span class="fc" id="L108">        String ts = OffsetDateTime.now().toString();</span>
+<span class="fc" id="L109">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="fc" id="L110">        System.out.println(ts);</span>
+<span class="fc" id="L111">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+<span class="fc" id="L112">        HttpResponse response = routes.search(pattern,ts,publicKey,hash);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="fc" id="L114">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="fc" id="L115">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="fc" id="L116">            Map&lt;Integer,String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            for (JsonElement object:list){</span>
+<span class="fc" id="L118">                JsonObject character = object.getAsJsonObject();</span>
+<span class="fc" id="L119">                String name = character.get(&quot;name&quot;).getAsString();</span>
+<span class="fc" id="L120">                map.put(character.get(&quot;id&quot;).getAsInt(),name);</span>
+<span class="fc" id="L121">            }</span>
+<span class="fc" id="L122">            return map;</span>
+        }else{
+<span class="nc" id="L124">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L125">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L126">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L127">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L129">        return null;</span>
+    }
+
+    public JsonObject characterLoad(int id) throws NoSuchAlgorithmException {
+<span class="fc" id="L133">        String ts = OffsetDateTime.now().toString();</span>
+<span class="fc" id="L134">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="fc" id="L135">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="fc" id="L137">        HttpResponse response = routes.character(id,ts,publicKey,hash);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="fc" id="L139">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="fc" id="L140">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="fc" id="L141">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="fc" id="L142">            return object;</span>
+        }else{
+<span class="nc" id="L144">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L145">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L146">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L147">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L149">        return null;</span>
+    }
+
+    public JsonObject characterLoad(String name) throws IOException, NoSuchAlgorithmException {
+<span class="fc" id="L153">        String ts = OffsetDateTime.now().toString();</span>
+<span class="fc" id="L154">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="fc" id="L155">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="fc" id="L157">        String new_name = name.replace(&quot; &quot;,&quot;%20&quot;);</span>
+<span class="fc" id="L158">        HttpResponse response = routes.character(new_name,ts,publicKey,hash);</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="fc" id="L160">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="fc" id="L161">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="fc" id="L162">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="fc" id="L163">            return object;</span>
+        }else{
+<span class="nc" id="L165">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L166">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L167">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L168">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L170">        return null;</span>
+    }
+
+    public JsonObject comicLoad(int id) throws NoSuchAlgorithmException{
+<span class="fc" id="L174">        String ts = OffsetDateTime.now().toString();</span>
+<span class="fc" id="L175">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="fc" id="L176">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="fc" id="L178">        HttpResponse response = routes.comic(id,ts,publicKey,hash);</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="fc" id="L180">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="fc" id="L181">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="fc" id="L182">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="fc" id="L183">            return object;</span>
+        }else{
+<span class="nc" id="L185">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L186">            alert.setTitle(languageManager.getResource(&quot;Sorry&quot;));</span>
+<span class="nc" id="L187">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L188">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L190">        return null;</span>
+    }
+
+    @Override
+    public void sendReport(String content) throws IOException {
+<span class="nc" id="L195">        System.out.println(content);</span>
+<span class="nc" id="L196">        TextInputDialog td = new TextInputDialog();</span>
+<span class="nc" id="L197">        td.setHeaderText(languageManager.getResource(&quot;emailDescription&quot;));</span>
+<span class="nc" id="L198">        td.showAndWait();</span>
+<span class="nc" id="L199">        emailManager.send(fromEmail,td.getResult(),&quot;Report&quot;,content);</span>
+<span class="nc" id="L200">    }</span>
+
+    @Override
+    public void findCharacter(int id) throws IOException, NoSuchAlgorithmException{
+<span class="fc" id="L204">        System.out.println(&quot;find character&quot;);</span>
+        JsonObject object;
+<span class="fc" id="L206">        String result = dBmanager.checkCache(&quot;character&quot;,id);</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">        if (result == null){</span>
+<span class="fc" id="L208">            System.out.println(&quot;no cache hit&quot;);</span>
+<span class="fc" id="L209">            object = characterLoad(id);</span>
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">            if (object == null){</span>
+<span class="nc" id="L211">                return;</span>
+            }
+<span class="fc" id="L213">            dBmanager.insertCache(&quot;character&quot;,id,object.get(&quot;name&quot;).getAsString(),object.toString());</span>
+        }else{
+<span class="nc" id="L215">            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, languageManager.getResource(&quot;cacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L216">            alert.setTitle(languageManager.getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L217">            alert.showAndWait();</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L219">                object = new JsonParser().parse(result).getAsJsonObject();</span>
+            }else{
+<span class="nc" id="L221">                object = characterLoad(id);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">                if (object == null){</span>
+<span class="nc" id="L223">                    return;</span>
+                }
+<span class="nc" id="L225">                dBmanager.updateCache(&quot;character&quot;,id,object.get(&quot;name&quot;).getAsString(),object.toString());</span>
+            }
+        }
+<span class="fc" id="L228">        update(object.get(&quot;name&quot;).getAsString(),id,&quot;character&quot;);</span>
+        try {
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">            if(thresholdListener.analyse(characterComics(id))){</span>
+<span class="nc" id="L231">                alertFactory.thresholdAlert();</span>
+            }
+<span class="fc" id="L233">            viewFactory.buildCharacter(object);</span>
+<span class="nc" id="L234">        } catch (CharacterNotFoundException e) {</span>
+<span class="nc" id="L235">            alertFactory.normalErrorAlert(&quot;this character's comic record is not found&quot;);</span>
+<span class="nc" id="L236">            viewFactory.buildCharacter(object);</span>
+<span class="fc" id="L237">        }</span>
+<span class="fc" id="L238">    }</span>
+
+    public int characterComics(int id) throws NoSuchAlgorithmException, CharacterNotFoundException {
+<span class="fc" id="L241">        String ts = OffsetDateTime.now().toString();</span>
+<span class="fc" id="L242">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="fc" id="L243">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+<span class="fc" id="L244">        HttpResponse response = routes.characterComics(id,ts,publicKey,hash);</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="fc" id="L246">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="fc" id="L247">            return jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;total&quot;).getAsInt();</span>
+        }else{
+<span class="nc" id="L249">            alertFactory.normalErrorAlert(response.body().toString());</span>
+<span class="nc" id="L250">            throw new CharacterNotFoundException();</span>
+        }
+    }
+
+    @Override
+    public void findComic(int id) throws IOException, NoSuchAlgorithmException {
+        JsonObject object;
+<span class="fc" id="L257">        String result = dBmanager.checkCache(&quot;comic&quot;,id);</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">        if (result == null){</span>
+<span class="fc" id="L259">            System.out.println(&quot;no cache hit&quot;);</span>
+<span class="fc" id="L260">            object = comicLoad(id);</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">            if (object == null){</span>
+<span class="nc" id="L262">                return;</span>
+            }
+<span class="fc" id="L264">            dBmanager.insertCache(&quot;comic&quot;,id,object.get(&quot;title&quot;).getAsString(),object.toString());</span>
+        }else{
+<span class="nc" id="L266">            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, languageManager.getResource(&quot;cacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L267">            alert.setTitle(languageManager.getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L268">            alert.showAndWait();</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L270">                object = new JsonParser().parse(result).getAsJsonObject();</span>
+            }else{
+<span class="nc" id="L272">                object = comicLoad(id);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">                if (object == null){</span>
+<span class="nc" id="L274">                    return;</span>
+                }
+<span class="nc" id="L276">                dBmanager.updateCache(&quot;comic&quot;,id,object.get(&quot;title&quot;).getAsString(),object.toString());</span>
+            }
+        }
+<span class="fc" id="L279">        update(object.get(&quot;title&quot;).getAsString(),id,&quot;comic&quot;);</span>
+<span class="fc" id="L280">        viewFactory.buildComic(object);</span>
+<span class="fc" id="L281">    }</span>
+
+    @Override
+    public void clearCache() {
+<span class="nc" id="L285">        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, languageManager.getResource(&quot;clearCacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L286">        alert.setTitle(languageManager.getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L287">        alert.showAndWait();</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">        if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L289">            dBmanager.clearCache();</span>
+        }
+<span class="nc" id="L291">    }</span>
+
+    @Override
+    public void setLanguage(String language) throws IOException {
+<span class="fc" id="L295">        languageManager.setResources(language);</span>
+<span class="fc" id="L296">        viewFactory.refresh();</span>
+<span class="fc" id="L297">    }</span>
+
+    @Override
+    public String getResource(String key){
+<span class="fc" id="L301">        return languageManager.getResource(key);</span>
+    }
+
+    @Override
+    public List&lt;String&gt; getLanguages(){
+<span class="nc" id="L306">        return languageManager.getLanguages();</span>
+    }
+
+    public DBmanager getDBManager(){
+<span class="nc" id="L310">        return this.dBmanager;</span>
+    }
+
+    public void update(String name, int id, String type){
+        //System.out.println(&quot;build link &quot;+ name + type);
+        try {
+<span class="nc" id="L316">            Hyperlink link = new Hyperlink();</span>
+<span class="nc" id="L317">            link.setText(name);</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (type == &quot;comic&quot;) {</span>
+<span class="nc" id="L319">                link.setOnAction((ActionEvent e) -&gt; {</span>
+                    try {
+<span class="nc" id="L321">                        findComic(id);</span>
+<span class="nc" id="L322">                    } catch (NoSuchAlgorithmException noSuchAlgorithmException) {</span>
+<span class="nc" id="L323">                        noSuchAlgorithmException.printStackTrace();</span>
+<span class="nc" id="L324">                    } catch (IOException ioException) {</span>
+<span class="nc" id="L325">                        ioException.printStackTrace();</span>
+<span class="nc" id="L326">                    }</span>
+<span class="nc" id="L327">                });</span>
+            } else {
+<span class="nc" id="L329">                link.setOnAction((ActionEvent e) -&gt; {</span>
+                    try {
+<span class="nc" id="L331">                        findCharacter(id);</span>
+<span class="nc" id="L332">                    } catch (IOException ioException) {</span>
+<span class="nc" id="L333">                        ioException.printStackTrace();</span>
+<span class="nc" id="L334">                    } catch (NoSuchAlgorithmException noSuchAlgorithmException) {</span>
+<span class="nc" id="L335">                        noSuchAlgorithmException.printStackTrace();</span>
+<span class="nc" id="L336">                    }</span>
+<span class="nc" id="L337">                });</span>
+            }
+<span class="nc" id="L339">            this.breadcrumb.update(link);</span>
+        }
+<span class="fc" id="L341">        catch (NoClassDefFoundError e1){</span>
+
+        }
+<span class="fc" id="L344">        catch (ExceptionInInitializerError e2){</span>
+
+<span class="pc" id="L346">        }</span>
+<span class="fc" id="L347">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ViewFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.view</a> &gt; <span class="el_source">ViewFactory.java</span></div><h1>ViewFactory.java</h1><pre class="source lang-java linenums">package app.view;
+
+import app.model.Engine;
+import app.controllers.*;
+import com.google.gson.JsonObject;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+public class ViewFactory {
+    private static final String path = &quot;pages/&quot;;
+    private Engine model;
+    private Stage stage;
+    private Runnable refresh;
+<span class="nc" id="L18">    public ViewFactory(Engine model, Stage stage){</span>
+<span class="nc" id="L19">        this.model = model;</span>
+<span class="nc" id="L20">        this.stage = stage;</span>
+<span class="nc" id="L21">    }</span>
+    public void buildLoading() throws IOException {
+<span class="nc" id="L23">        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path + &quot;loading.fxml&quot;));</span>
+<span class="nc" id="L24">        LoadingController controller = new LoadingController();</span>
+<span class="nc" id="L25">        controller.setEngine(model);</span>
+<span class="nc" id="L26">        loader.setController(controller);</span>
+<span class="nc" id="L27">        Parent entry = loader.load();</span>
+<span class="nc" id="L28">        Scene scene = new Scene(entry,640,480);</span>
+<span class="nc" id="L29">        controller.setScene(scene);</span>
+<span class="nc" id="L30">        controller.setup();</span>
+<span class="nc" id="L31">        stage.setScene(scene);</span>
+<span class="nc" id="L32">        this.refresh = () -&gt; {</span>
+            try {
+<span class="nc" id="L34">                buildLoading();</span>
+<span class="nc" id="L35">            } catch (IOException e) {</span>
+<span class="nc" id="L36">                e.printStackTrace();</span>
+<span class="nc" id="L37">            }</span>
+<span class="nc" id="L38">        };</span>
+<span class="nc" id="L39">    }</span>
+    public void buildSearch() throws IOException {
+<span class="nc" id="L41">        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path + &quot;search.fxml&quot;));</span>
+<span class="nc" id="L42">        SearchController controller = new SearchController();</span>
+<span class="nc" id="L43">        controller.setEngine(model);</span>
+<span class="nc" id="L44">        loader.setController(controller);</span>
+<span class="nc" id="L45">        Parent entry = loader.load();</span>
+<span class="nc" id="L46">        Scene scene = new Scene(entry,640,480);</span>
+<span class="nc" id="L47">        controller.setScene(scene);</span>
+<span class="nc" id="L48">        controller.fillBreadcrumb(model.getBreadcrumb());</span>
+<span class="nc" id="L49">        stage.setScene(scene);</span>
+<span class="nc" id="L50">        this.refresh = () -&gt; {</span>
+            try {
+<span class="nc" id="L52">                buildSearch();</span>
+<span class="nc" id="L53">            } catch (IOException e) {</span>
+<span class="nc" id="L54">                e.printStackTrace();</span>
+<span class="nc" id="L55">            }</span>
+<span class="nc" id="L56">        };</span>
+<span class="nc" id="L57">    }</span>
+    public void buildCharacter(JsonObject object) throws IOException {
+<span class="nc" id="L59">        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path + &quot;character.fxml&quot;));</span>
+<span class="nc" id="L60">        CharacterController controller = new CharacterController();</span>
+<span class="nc" id="L61">        controller.setEngine(model);</span>
+<span class="nc" id="L62">        loader.setController(controller);</span>
+<span class="nc" id="L63">        Parent entry = loader.load();</span>
+<span class="nc" id="L64">        Scene scene = new Scene(entry,640,480);</span>
+<span class="nc" id="L65">        controller.setScene(scene);</span>
+<span class="nc" id="L66">        controller.setup(object);</span>
+<span class="nc" id="L67">        stage.setScene(scene);</span>
+<span class="nc" id="L68">        this.refresh = () -&gt; {</span>
+            try {
+<span class="nc" id="L70">                buildCharacter(object);</span>
+<span class="nc" id="L71">            } catch (IOException e) {</span>
+<span class="nc" id="L72">                e.printStackTrace();</span>
+<span class="nc" id="L73">            }</span>
+<span class="nc" id="L74">        };</span>
+<span class="nc" id="L75">    }</span>
+    public void buildComic(JsonObject object) throws IOException{
+<span class="nc" id="L77">        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path + &quot;comic.fxml&quot;));</span>
+<span class="nc" id="L78">        System.out.println(&quot;load&quot;);</span>
+<span class="nc" id="L79">        ComicController controller = new ComicController();</span>
+<span class="nc" id="L80">        controller.setEngine(model);</span>
+<span class="nc" id="L81">        loader.setController(controller);</span>
+<span class="nc" id="L82">        Parent entry = loader.load();</span>
+<span class="nc" id="L83">        Scene scene = new Scene(entry,640,480);</span>
+<span class="nc" id="L84">        controller.setScene(scene);</span>
+<span class="nc" id="L85">        controller.setup(object);</span>
+<span class="nc" id="L86">        stage.setScene(scene);</span>
+<span class="nc" id="L87">        this.refresh = () -&gt; {</span>
+            try {
+<span class="nc" id="L89">                buildComic(object);</span>
+<span class="nc" id="L90">            } catch (IOException e) {</span>
+<span class="nc" id="L91">                e.printStackTrace();</span>
+<span class="nc" id="L92">            }</span>
+<span class="nc" id="L93">        };</span>
+<span class="nc" id="L94">    }</span>
+    public void buildThreshold() throws IOException{
+<span class="nc" id="L96">        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path + &quot;threshold.fxml&quot;));</span>
+<span class="nc" id="L97">        ThresholdController controller = new ThresholdController();</span>
+<span class="nc" id="L98">        controller.setEngine(model);</span>
+<span class="nc" id="L99">        loader.setController(controller);</span>
+<span class="nc" id="L100">        Parent entry = loader.load();</span>
+<span class="nc" id="L101">        Scene scene = new Scene(entry,640,480);</span>
+<span class="nc" id="L102">        controller.setScene(scene);</span>
+<span class="nc" id="L103">        controller.setup();</span>
+<span class="nc" id="L104">        stage.setScene(scene);</span>
+<span class="nc" id="L105">        this.refresh = () -&gt; {</span>
+            try {
+<span class="nc" id="L107">                buildThreshold();</span>
+<span class="nc" id="L108">            } catch (IOException e) {</span>
+<span class="nc" id="L109">                e.printStackTrace();</span>
+<span class="nc" id="L110">            }</span>
+<span class="nc" id="L111">        };</span>
+<span class="nc" id="L112">    }</span>
+    public void refresh(){
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (refresh != null){</span>
+<span class="nc" id="L115">            refresh.run();</span>
+        }
+<span class="nc" id="L117">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

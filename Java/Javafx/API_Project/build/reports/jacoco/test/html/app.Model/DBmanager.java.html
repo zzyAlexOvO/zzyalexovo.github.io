@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DBmanager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model</a> &gt; <span class="el_source">DBmanager.java</span></div><h1>DBmanager.java</h1><pre class="source lang-java linenums">package app.model;
+
+import java.io.File;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L8">public class DBmanager {</span>
+    private static final String dbName = &quot;breadcrumbs.db&quot;;
+    private static final String dbURL = &quot;jdbc:sqlite:&quot; + dbName;
+
+    public void createDB() {
+<span class="fc" id="L13">        File dbFile = new File(dbName);</span>
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">        if (dbFile.exists()) {</span>
+<span class="nc" id="L15">            System.out.println(&quot;Database already created&quot;);</span>
+<span class="nc" id="L16">            return;</span>
+        }
+<span class="fc" id="L18">        try (Connection ignored = DriverManager.getConnection(dbURL)) {</span>
+            // If we get here that means no exception raised from getConnection - meaning it worked
+<span class="fc" id="L20">            System.out.println(&quot;A new database has been created.&quot;);</span>
+<span class="nc" id="L21">        } catch (SQLException e) {</span>
+<span class="nc" id="L22">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L23">            System.exit(-1);</span>
+<span class="fc" id="L24">        }</span>
+<span class="fc" id="L25">    }</span>
+
+    public void removeDB() {
+<span class="fc" id="L28">        File dbFile = new File(dbName);</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if (dbFile.exists()) {</span>
+<span class="fc" id="L30">            boolean result = dbFile.delete();</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">            if (!result) {</span>
+<span class="nc" id="L32">                System.out.println(&quot;Couldn't delete existing db file&quot;);</span>
+<span class="nc" id="L33">                System.exit(-1);</span>
+            } else {
+<span class="fc" id="L35">                System.out.println(&quot;Removed existing DB file.&quot;);</span>
+            }
+<span class="fc" id="L37">        } else {</span>
+<span class="nc" id="L38">            System.out.println(&quot;No existing DB file.&quot;);</span>
+        }
+<span class="fc" id="L40">    }</span>
+
+    public void setupDB() {
+<span class="fc" id="L43">        String createUserTableSQL =</span>
+                &quot;&quot;&quot;
+                CREATE TABLE IF NOT EXISTS breadcrumbs (
+                id integer not null,
+                type text not null,
+                item text not null);
+                &quot;&quot;&quot;;
+
+<span class="fc" id="L51">        String createCacheTableSQL =</span>
+                &quot;&quot;&quot;
+                CREATE TABLE IF NOT EXISTS caches (
+                type text,
+                id integer,
+                name text,
+                info text,
+                PRIMARY KEY(type,id));
+                &quot;&quot;&quot;;
+
+<span class="fc" id="L61">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L62">             Statement statement = conn.createStatement()) {</span>
+<span class="fc" id="L63">            statement.execute(createUserTableSQL);</span>
+<span class="fc" id="L64">            statement.execute(createCacheTableSQL);</span>
+<span class="fc" id="L65">            System.out.println(&quot;Created tables&quot;);</span>
+<span class="nc" id="L66">        } catch (SQLException e) {</span>
+<span class="nc" id="L67">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L68">            System.exit(-1);</span>
+<span class="fc" id="L69">        }</span>
+<span class="fc" id="L70">    }</span>
+
+    public List&lt;String[]&gt; listItems(){
+<span class="fc" id="L73">        String newLine = System.getProperty(&quot;line.separator&quot;);</span>
+<span class="fc" id="L74">        String loginUserSQL =</span>
+                &quot;&quot;&quot;
+                SELECT id,type,item
+                FROM breadcrumbs;
+                &quot;&quot;&quot;;
+<span class="fc" id="L79">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L80">             PreparedStatement preparedStatement = conn.prepareStatement(loginUserSQL)) {</span>
+<span class="fc" id="L81">            ResultSet results =  preparedStatement.executeQuery();</span>
+<span class="fc" id="L82">            List&lt;String[]&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            while (results.next()) {</span>
+<span class="fc" id="L84">                list.add(new String[]{results.getString(&quot;item&quot;),results.getString(&quot;type&quot;),results.getString(&quot;id&quot;)});</span>
+            }
+<span class="fc" id="L86">            return list;</span>
+<span class="nc" id="L87">        } catch (SQLException e) {</span>
+<span class="nc" id="L88">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L89">            System.exit(-1);</span>
+        }
+<span class="nc" id="L91">        return null;</span>
+    }
+
+    public void insertItem(String type,String item, int id){
+<span class="fc" id="L95">        String loginUserSQL = &quot;INSERT INTO breadcrumbs(type, item, id) VALUES (?, ?, ?); &quot;;</span>
+<span class="fc" id="L96">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L97">             PreparedStatement preparedStatement = conn.prepareStatement(loginUserSQL)) {</span>
+<span class="fc" id="L98">            preparedStatement.setString(1,type);</span>
+<span class="fc" id="L99">            preparedStatement.setString(2,item);</span>
+<span class="fc" id="L100">            preparedStatement.setInt(3,id);</span>
+<span class="fc" id="L101">            preparedStatement.execute();</span>
+<span class="nc" id="L102">        } catch (SQLException e) {</span>
+<span class="nc" id="L103">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L104">            System.exit(-1);</span>
+<span class="fc" id="L105">        }</span>
+<span class="fc" id="L106">    }</span>
+
+    public String checkCache(String type, int id){
+<span class="fc" id="L109">        String sql = &quot;&quot;&quot;</span>
+                SELECT info
+                FROM caches
+                WHERE type = ? and id = ?;
+                &quot;&quot;&quot;;
+<span class="fc" id="L114">        System.out.println(sql);</span>
+<span class="fc" id="L115">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L116">             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L117">            preparedStatement.setString(1,type);</span>
+<span class="fc" id="L118">            preparedStatement.setInt(2,id);</span>
+<span class="fc" id="L119">            ResultSet results = preparedStatement.executeQuery();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            if(results.next()){</span>
+<span class="fc" id="L121">                return results.getString(&quot;info&quot;);</span>
+            }
+<span class="fc" id="L123">            return null;</span>
+<span class="pc bpc" id="L124" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L125">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L126">            return null;</span>
+        }
+    }
+
+    public void updateCache(String type, int id, String name, String info){
+<span class="fc" id="L131">        String sql = &quot;&quot;&quot;</span>
+               UPDATE caches
+               SET info = ?
+               WHERE type = ? and id = ? and name = ?;&quot;&quot;&quot;;
+<span class="fc" id="L135">        System.out.println(sql);</span>
+<span class="fc" id="L136">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L137">             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L138">            preparedStatement.setString(1,info);</span>
+<span class="fc" id="L139">            preparedStatement.setString(2,type);</span>
+<span class="fc" id="L140">            preparedStatement.setInt(3,id);</span>
+<span class="fc" id="L141">            preparedStatement.setString(4,name);</span>
+<span class="fc" id="L142">            preparedStatement.executeUpdate();</span>
+<span class="nc" id="L143">        } catch (SQLException e) {</span>
+<span class="nc" id="L144">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L145">            System.exit(-1);</span>
+<span class="fc" id="L146">        }</span>
+<span class="fc" id="L147">    }</span>
+
+    public void insertCache(String type, int id, String name, String info){
+<span class="fc" id="L150">        String sql = &quot;&quot;&quot;</span>
+               INSERT INTO caches (type, id, name, info)
+               VALUES(?,?,?,?);&quot;&quot;&quot;;
+<span class="fc" id="L153">        System.out.println(sql);</span>
+<span class="fc" id="L154">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L155">             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L156">            preparedStatement.setString(1,type);</span>
+<span class="fc" id="L157">            preparedStatement.setString(3,name);</span>
+<span class="fc" id="L158">            preparedStatement.setInt(2,id);</span>
+<span class="fc" id="L159">            preparedStatement.setString(4,info);</span>
+<span class="fc" id="L160">            preparedStatement.executeUpdate();</span>
+<span class="nc" id="L161">        } catch (SQLException e) {</span>
+<span class="nc" id="L162">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L163">            System.exit(-1);</span>
+<span class="fc" id="L164">        }</span>
+<span class="fc" id="L165">    }</span>
+
+
+    public String checkCache(String type, String name){
+<span class="fc" id="L169">        String sql = &quot;&quot;&quot;</span>
+                SELECT info
+                FROM caches
+                WHERE type = ? and name = ?;
+                &quot;&quot;&quot;;
+<span class="fc" id="L174">        System.out.println(sql);</span>
+<span class="fc" id="L175">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L176">             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L177">            preparedStatement.setString(1,type);</span>
+<span class="fc" id="L178">            preparedStatement.setString(2,name);</span>
+<span class="fc" id="L179">            ResultSet results = preparedStatement.executeQuery();</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">            if (results.next()) {</span>
+<span class="fc" id="L181">                return results.getString(&quot;info&quot;);</span>
+            }
+<span class="fc" id="L183">            return null;</span>
+<span class="pc bpc" id="L184" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L185">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L186">            return null;</span>
+        }
+    }
+
+    public String clearCache(){
+<span class="fc" id="L191">        String sql = &quot;&quot;&quot;</span>
+                DELETE FROM caches
+                &quot;&quot;&quot;;
+<span class="fc" id="L194">        try (Connection conn = DriverManager.getConnection(dbURL);</span>
+<span class="fc" id="L195">             Statement statement = conn.createStatement()) {</span>
+<span class="fc" id="L196">            statement.execute(sql);</span>
+<span class="fc" id="L197">            return null;</span>
+<span class="nc" id="L198">        } catch (SQLException e) {</span>
+<span class="nc" id="L199">            System.out.println(e.getMessage());</span>
+<span class="nc" id="L200">            return null;</span>
+        }
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

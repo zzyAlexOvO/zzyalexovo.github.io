@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MarvelApp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app</a> &gt; <span class="el_source">MarvelApp.java</span></div><h1>MarvelApp.java</h1><pre class="source lang-java linenums">package app;
+
+import app.model.*;
+import app.model.utils.Routes;
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+
+<span class="nc" id="L11">public class MarvelApp extends Application {</span>
+<span class="nc" id="L12">    public static final String publicKey = System.getenv(&quot;INPUT_API_KEY&quot;);</span>
+<span class="nc" id="L13">    public static final String privateKey = System.getenv(&quot;INPUT_API_APP_ID&quot;);</span>
+<span class="nc" id="L14">    public static final String fromEmail = System.getenv(&quot;SENDGRID_API_EMAIL&quot;);</span>
+<span class="nc" id="L15">    public static final String emailKey = System.getenv(&quot;SENDGRID_API_KEY&quot;);</span>
+    private static String[] arg;
+    private Engine engine;
+    @Override
+    public void start(Stage stage) throws IOException {
+<span class="nc bnc" id="L20" title="All 4 branches missed.">        if (arg[0].equals(&quot;online&quot;) &amp;&amp; arg[1].equals(&quot;online&quot;)) {</span>
+<span class="nc" id="L21">            this.engine = new OnlineEngine(stage, new Routes(), publicKey, privateKey,fromEmail,emailKey);</span>
+<span class="nc bnc" id="L22" title="All 4 branches missed.">        }else if (arg[0].equals(&quot;offline&quot;) &amp;&amp; arg[1].equals(&quot;offline&quot;)){</span>
+<span class="nc" id="L23">            this.engine = new DummyEngine(stage);</span>
+<span class="nc bnc" id="L24" title="All 4 branches missed.">        }else if (arg[0].equals(&quot;offline&quot;) &amp;&amp; arg[1].equals(&quot;online&quot;)){</span>
+<span class="nc" id="L25">            this.engine = new DummyOutEngine(stage,fromEmail,emailKey);</span>
+<span class="nc bnc" id="L26" title="All 4 branches missed.">        }else if (arg[0].equals(&quot;online&quot;) &amp;&amp; arg[1].equals(&quot;offline&quot;)){</span>
+<span class="nc" id="L27">            this.engine = new DummyInEngine(stage, new Routes(), publicKey, privateKey);</span>
+        }else{
+<span class="nc" id="L29">            System.out.println(arg);</span>
+        }
+<span class="nc" id="L31">        engine.start();</span>
+<span class="nc" id="L32">        stage.show();</span>
+<span class="nc" id="L33">    }</span>
+    public static void main(String[] args) {
+<span class="nc" id="L35">        arg = args;</span>
+<span class="nc" id="L36">        launch();</span>
+<span class="nc" id="L37">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

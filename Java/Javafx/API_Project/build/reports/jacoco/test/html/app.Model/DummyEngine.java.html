@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DummyEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model</a> &gt; <span class="el_source">DummyEngine.java</span></div><h1>DummyEngine.java</h1><pre class="source lang-java linenums">package app.model;
+
+import app.model.exception.CharacterNotFoundException;
+import app.view.AlertFactory;
+import app.view.ViewFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DummyEngine implements Engine {
+    public Stage stage;
+    private BgmManager bgmManager;
+    private LanguageManager languageManager;
+    private ViewFactory viewFactory;
+    private DBmanager dBmanager;
+    private BreadcrumbObserver breadcrumb;
+    protected AlertFactory alertFactory;
+    protected ThresholdListener thresholdListener;
+<span class="nc" id="L30">    public DummyEngine(Stage stage){</span>
+<span class="nc" id="L31">        this.breadcrumb = new BreadcrumbObserver();</span>
+<span class="nc" id="L32">        this.stage = stage;</span>
+<span class="nc" id="L33">        this.languageManager = new LanguageManager();</span>
+<span class="nc" id="L34">        this.bgmManager = new BgmManager();</span>
+<span class="nc" id="L35">        this.dBmanager = new DBmanager();</span>
+<span class="nc" id="L36">        this.viewFactory = new ViewFactory(this,stage);</span>
+<span class="nc" id="L37">        this.alertFactory = new AlertFactory(languageManager);</span>
+<span class="nc" id="L38">        this.thresholdListener = new ThresholdListener();</span>
+<span class="nc" id="L39">    }</span>
+    public void start() throws IOException {
+<span class="nc" id="L41">        dBmanager.createDB();</span>
+<span class="nc" id="L42">        dBmanager.setupDB();</span>
+<span class="nc" id="L43">        bgmManager.setup();</span>
+<span class="nc" id="L44">        languageManager.initLanguages();</span>
+<span class="nc" id="L45">        setLanguage(&quot;english&quot;);</span>
+<span class="nc" id="L46">        loadingLoad();</span>
+<span class="nc" id="L47">    }</span>
+    public void pauseMusic(){
+<span class="nc" id="L49">        bgmManager.pause();</span>
+<span class="nc" id="L50">    }</span>
+    public void playMusic(){
+<span class="nc" id="L52">        bgmManager.play();</span>
+<span class="nc" id="L53">    }</span>
+    public void loadingLoad() throws IOException {
+<span class="nc" id="L55">        viewFactory.buildLoading();</span>
+<span class="nc" id="L56">    }</span>
+    public void thresholdLoad() throws IOException {
+<span class="nc" id="L58">        viewFactory.buildThreshold();</span>
+<span class="nc" id="L59">    }</span>
+    public void searchLoad() throws IOException {
+<span class="nc" id="L61">        viewFactory.buildSearch();</span>
+<span class="nc" id="L62">    }</span>
+
+    public Map&lt;Integer,String&gt; characters(String pattern) throws NoSuchAlgorithmException {
+<span class="nc" id="L65">        Map&lt;Integer,String&gt; map = new HashMap&lt;&gt;(){{</span>
+<span class="nc" id="L66">            put(1,&quot;Superman&quot;);</span>
+<span class="nc" id="L67">            put(2,&quot;SpiderMan&quot;);}};</span>
+<span class="nc" id="L68">        return map;</span>
+    }
+
+    public JsonObject characterLoad(int id) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L72">        String json = &quot;&quot;&quot;</span>
+                           {
+                           &quot;code&quot;: 200,
+                           &quot;status&quot;: &quot;Ok&quot;,
+                           &quot;copyright&quot;: &quot;漏 2022 MARVEL&quot;,
+                           &quot;attributionText&quot;: &quot;Data provided by Marvel. 漏 2022 MARVEL&quot;,
+                           &quot;attributionHTML&quot;: &quot;&lt;a href=\\&quot;http://marvel.com\\&quot;&gt;Data provided by Marvel. 漏 2022 MARVEL&lt;/a&gt;&quot;,
+                           &quot;etag&quot;: &quot;55342c8b21941bfea4b795ff85633d9063e1da0e&quot;,
+                           &quot;data&quot;: {
+                             &quot;offset&quot;: 0,
+                             &quot;limit&quot;: 20,
+                             &quot;total&quot;: 1,
+                             &quot;count&quot;: 1,
+                             &quot;results&quot;: [
+                               {
+                                 &quot;id&quot;: 1011334,
+                                 &quot;name&quot;: &quot;3-D Man&quot;,
+                                 &quot;description&quot;: &quot;&quot;,
+                                 &quot;modified&quot;: &quot;2014-04-29T14:18:17-0400&quot;,
+                                 &quot;thumbnail&quot;: {
+                                   &quot;path&quot;: &quot;http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784&quot;,
+                                   &quot;extension&quot;: &quot;jpg&quot;
+                                 },
+                                 &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1011334&quot;,
+                                 &quot;comics&quot;: {
+                                   &quot;available&quot;: 12,
+                                   &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1011334/comics&quot;,
+                                   &quot;items&quot;: [
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/21366&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #14&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/24571&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #14 (SPOTLIGHT VARIANT)&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/21546&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #15&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/21741&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #16&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/21975&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #17&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/22299&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #18&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/22300&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #18 (ZOMBIE VARIANT)&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/22506&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #19&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/8500&quot;,
+                                       &quot;name&quot;: &quot;Deadpool (1997) #44&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/10223&quot;,
+                                       &quot;name&quot;: &quot;Marvel Premiere (1972) #35&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/10224&quot;,
+                                       &quot;name&quot;: &quot;Marvel Premiere (1972) #36&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/10225&quot;,
+                                       &quot;name&quot;: &quot;Marvel Premiere (1972) #37&quot;
+                                     }
+                                   ],
+                                   &quot;returned&quot;: 12
+                                 },
+                                 &quot;series&quot;: {
+                                   &quot;available&quot;: 3,
+                                   &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1011334/series&quot;,
+                                   &quot;items&quot;: [
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/series/1945&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007 - 2010)&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/series/2005&quot;,
+                                       &quot;name&quot;: &quot;Deadpool (1997 - 2002)&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/series/2045&quot;,
+                                       &quot;name&quot;: &quot;Marvel Premiere (1972 - 1981)&quot;
+                                     }
+                                   ],
+                                   &quot;returned&quot;: 3
+                                 },
+                                 &quot;stories&quot;: {
+                                   &quot;available&quot;: 21,
+                                   &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1011334/stories&quot;,
+                                   &quot;items&quot;: [
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19947&quot;,
+                                       &quot;name&quot;: &quot;Cover #19947&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19948&quot;,
+                                       &quot;name&quot;: &quot;The 3-D Man!&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19949&quot;,
+                                       &quot;name&quot;: &quot;Cover #19949&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19950&quot;,
+                                       &quot;name&quot;: &quot;The Devil's Music!&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19951&quot;,
+                                       &quot;name&quot;: &quot;Cover #19951&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/19952&quot;,
+                                       &quot;name&quot;: &quot;Code-Name:  The Cold Warrior!&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47184&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #14&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47185&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #14 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47498&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #15&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47499&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #15 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47792&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #16&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/47793&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #16 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/48361&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #17&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/48362&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #17 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/49103&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #18&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/49104&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #18 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/49106&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #18, Zombie Variant - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/49888&quot;,
+                                       &quot;name&quot;: &quot;AVENGERS: THE INITIATIVE (2007) #19&quot;,
+                                       &quot;type&quot;: &quot;cover&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/49889&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #19 - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/54371&quot;,
+                                       &quot;name&quot;: &quot;Avengers: The Initiative (2007) #14, Spotlight Variant - Int&quot;,
+                                       &quot;type&quot;: &quot;interiorStory&quot;
+                                     }
+                                   ],
+                                   &quot;returned&quot;: 20
+                                 },
+                                 &quot;events&quot;: {
+                                   &quot;available&quot;: 1,
+                                   &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1011334/events&quot;,
+                                   &quot;items&quot;: [
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/events/269&quot;,
+                                       &quot;name&quot;: &quot;Secret Invasion&quot;
+                                     }
+                                   ],
+                                   &quot;returned&quot;: 1
+                                 },
+                                 &quot;urls&quot;: [
+                                   {
+                                     &quot;type&quot;: &quot;detail&quot;,
+                                     &quot;url&quot;: &quot;http://marvel.com/characters/74/3-d_man?utm_campaign=apiRef&amp;utm_source=a4df867c5bad9122e43258cb451170fe&quot;
+                                   },
+                                   {
+                                     &quot;type&quot;: &quot;wiki&quot;,
+                                     &quot;url&quot;: &quot;http://marvel.com/universe/3-D_Man_(Chandler)?utm_campaign=apiRef&amp;utm_source=a4df867c5bad9122e43258cb451170fe&quot;
+                                   },
+                                   {
+                                     &quot;type&quot;: &quot;comiclink&quot;,
+                                     &quot;url&quot;: &quot;http://marvel.com/comics/characters/1011334/3-d_man?utm_campaign=apiRef&amp;utm_source=a4df867c5bad9122e43258cb451170fe&quot;
+                                   }
+                                 ]
+                               }
+                             ]
+                           }
+                         }
+                         &quot;&quot;&quot;;
+<span class="nc" id="L307">        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();</span>
+<span class="nc" id="L308">        JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L309">        JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="nc" id="L310">        return object;</span>
+    }
+
+    public JsonObject characterLoad(String url) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L314">        return(characterLoad(0));</span>
+    }
+
+    public JsonObject comicLoad(int id) throws NoSuchAlgorithmException, IOException {
+<span class="nc" id="L318">        String json = &quot;&quot;&quot;</span>
+                {
+                  &quot;code&quot;: 200,
+                  &quot;status&quot;: &quot;Ok&quot;,
+                  &quot;copyright&quot;: &quot;漏 2022 MARVEL&quot;,
+                  &quot;attributionText&quot;: &quot;Data provided by Marvel. 漏 2022 MARVEL&quot;,
+                  &quot;attributionHTML&quot;: &quot;&lt;a href=\\&quot;http://marvel.com\\&quot;&gt;Data provided by Marvel. 漏 2022 MARVEL&lt;/a&gt;&quot;,
+                  &quot;etag&quot;: &quot;af4588c3d34cb4ea24125d77e36c532e6edc226a&quot;,
+                  &quot;data&quot;: {
+                    &quot;offset&quot;: 0,
+                    &quot;limit&quot;: 20,
+                    &quot;total&quot;: 1,
+                    &quot;count&quot;: 1,
+                    &quot;results&quot;: [
+                      {
+                        &quot;id&quot;: 49888,
+                        &quot;digitalId&quot;: 0,
+                        &quot;title&quot;: &quot;Deadpool Minibus (Hardcover)&quot;,
+                        &quot;issueNumber&quot;: 0,
+                        &quot;variantDescription&quot;: &quot;&quot;,
+                        &quot;description&quot;: &quot;Deadpool's wildest adventures are collected in one blood-soaked volume! What if Deadpool decided to kill everyone and everything that makes up the Marvel Universe? What if he followed that up by slaughtering the most famous fictional characters in classic literature? And what if he finally took aim at the ultimate target: himself? You'd have the fan-favorite \\&quot;Deadpool Killogy,\\&quot; that's what! But when Deadpool battles Deadpool, will he win or perish? Yes! Then: Deadpool awakes from a food coma to find...the zombie apocalypse has occurred! Can the Merc with a Mouth avoid becoming the Merc in their mouths?! And when Deadpool takes on Carnage, good-crazy battles bad-crazy, blood will flow - and Deadpool will literally go to pieces! Collecting DEADPOOL KILLS THE MARVEL UNIVERSE #1-4, DEADPOOL KILLUSTRATED #1-4, DEADPOOL KILLS DEADPOOL #1-4, NIGHT OF THE LIVING DEADPOOL #1-4, DEADPOOL VS. CARNAGE #1-4.&quot;,
+                        &quot;modified&quot;: &quot;2014-08-29T12:44:12-0400&quot;,
+                        &quot;isbn&quot;: &quot;978-0-7851-9030-1&quot;,
+                        &quot;upc&quot;: &quot;&quot;,
+                        &quot;diamondCode&quot;: &quot;&quot;,
+                        &quot;ean&quot;: &quot;9780785 190301 55999&quot;,
+                        &quot;issn&quot;: &quot;&quot;,
+                        &quot;format&quot;: &quot;Hardcover&quot;,
+                        &quot;pageCount&quot;: 480,
+                        &quot;textObjects&quot;: [
+                          {
+                            &quot;type&quot;: &quot;issue_solicit_text&quot;,
+                            &quot;language&quot;: &quot;en-us&quot;,
+                            &quot;text&quot;: &quot;Deadpool's wildest adventures are collected in one blood-soaked volume! What if Deadpool decided to kill everyone and everything that makes up the Marvel Universe? What if he followed that up by slaughtering the most famous fictional characters in classic literature? And what if he finally took aim at the ultimate target: himself? You'd have the fan-favorite \\&quot;Deadpool Killogy,\\&quot; that's what! But when Deadpool battles Deadpool, will he win or perish? Yes! Then: Deadpool awakes from a food coma to find...the zombie apocalypse has occurred! Can the Merc with a Mouth avoid becoming the Merc in their mouths?! And when Deadpool takes on Carnage, good-crazy battles bad-crazy, blood will flow - and Deadpool will literally go to pieces! Collecting DEADPOOL KILLS THE MARVEL UNIVERSE #1-4, DEADPOOL KILLUSTRATED #1-4, DEADPOOL KILLS DEADPOOL #1-4, NIGHT OF THE LIVING DEADPOOL #1-4, DEADPOOL VS. CARNAGE #1-4.&quot;
+                          }
+                        ],
+                        &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/49888&quot;,
+                        &quot;urls&quot;: [
+                          {
+                            &quot;type&quot;: &quot;detail&quot;,
+                            &quot;url&quot;: &quot;http://marvel.com/comics/collection/49888/deadpool_minibus_hardcover?utm_campaign=apiRef&amp;utm_source=a4df867c5bad9122e43258cb451170fe&quot;
+                          }
+                        ],
+                        &quot;series&quot;: {
+                          &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/series/18745&quot;,
+                          &quot;name&quot;: &quot;Deadpool Minibus (2014)&quot;
+                        },
+                        &quot;variants&quot;: [],
+                        &quot;collections&quot;: [],
+                        &quot;collectedIssues&quot;: [],
+                        &quot;dates&quot;: [
+                          {
+                            &quot;type&quot;: &quot;onsaleDate&quot;,
+                            &quot;date&quot;: &quot;2014-09-03T00:00:00-0400&quot;
+                          },
+                          {
+                            &quot;type&quot;: &quot;focDate&quot;,
+                            &quot;date&quot;: &quot;2014-07-15T00:00:00-0400&quot;
+                          }
+                        ],
+                        &quot;prices&quot;: [
+                          {
+                            &quot;type&quot;: &quot;printPrice&quot;,
+                            &quot;price&quot;: 59.99
+                          }
+                        ],
+                        &quot;thumbnail&quot;: {
+                          &quot;path&quot;: &quot;http://i.annihil.us/u/prod/marvel/i/mg/c/b0/5400a54331943&quot;,
+                          &quot;extension&quot;: &quot;jpg&quot;
+                        },
+                        &quot;images&quot;: [
+                          {
+                            &quot;path&quot;: &quot;http://i.annihil.us/u/prod/marvel/i/mg/c/b0/5400a54331943&quot;,
+                            &quot;extension&quot;: &quot;jpg&quot;
+                          }
+                        ],
+                        &quot;creators&quot;: {
+                          &quot;available&quot;: 6,
+                          &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/49888/creators&quot;,
+                          &quot;items&quot;: [
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/10023&quot;,
+                              &quot;name&quot;: &quot;Cullen Bunn&quot;,
+                              &quot;role&quot;: &quot;writer&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/13251&quot;,
+                              &quot;name&quot;: &quot;Salva Espin&quot;,
+                              &quot;role&quot;: &quot;artist&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/9081&quot;,
+                              &quot;name&quot;: &quot;Matteo Lolli&quot;,
+                              &quot;role&quot;: &quot;artist&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/9286&quot;,
+                              &quot;name&quot;: &quot;Ramon Rosanas&quot;,
+                              &quot;role&quot;: &quot;artist&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/11560&quot;,
+                              &quot;name&quot;: &quot;Dalibor Talajic&quot;,
+                              &quot;role&quot;: &quot;artist&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/creators/11309&quot;,
+                              &quot;name&quot;: &quot;Mike Del Mundo&quot;,
+                              &quot;role&quot;: &quot;penciller (cover)&quot;
+                            }
+                          ],
+                          &quot;returned&quot;: 6
+                        },
+                        &quot;characters&quot;: {
+                                   &quot;available&quot;: 1,
+                                   &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/47793/characters&quot;,
+                                   &quot;items&quot;: [
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1009313&quot;,
+                                       &quot;name&quot;: &quot;Superman&quot;
+                                     },
+                                     {
+                                       &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/characters/1009313&quot;,
+                                       &quot;name&quot;: &quot;SpiderMan&quot;
+                                     }
+                                   ],
+                                   &quot;returned&quot;: 1
+                        },
+                        &quot;stories&quot;: {
+                          &quot;available&quot;: 2,
+                          &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/49888/stories&quot;,
+                          &quot;items&quot;: [
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/111836&quot;,
+                              &quot;name&quot;: &quot;cover from Deadpool Minibus (2014)&quot;,
+                              &quot;type&quot;: &quot;cover&quot;
+                            },
+                            {
+                              &quot;resourceURI&quot;: &quot;http://gateway.marvel.com/v1/public/stories/111837&quot;,
+                              &quot;name&quot;: &quot;story from Deadpool Minibus (2014)&quot;,
+                              &quot;type&quot;: &quot;interiorStory&quot;
+                            }
+                          ],
+                          &quot;returned&quot;: 2
+                        },
+                        &quot;events&quot;: {
+                          &quot;available&quot;: 0,
+                          &quot;collectionURI&quot;: &quot;http://gateway.marvel.com/v1/public/comics/49888/events&quot;,
+                          &quot;items&quot;: [],
+                          &quot;returned&quot;: 0
+                        }
+                      }
+                    ]
+                  }
+                }&quot;&quot;&quot;;
+<span class="nc" id="L473">        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();</span>
+<span class="nc" id="L474">        JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L475">        JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="nc" id="L476">        return object;</span>
+    }
+
+    @Override
+    public int characterComics(int id) throws NoSuchAlgorithmException, CharacterNotFoundException {
+<span class="nc" id="L481">        return 10;</span>
+    }
+
+    @Override
+    public void sendReport(String content) throws IOException {
+<span class="nc" id="L486">        System.out.println(content);</span>
+<span class="nc" id="L487">        TextInputDialog td = new TextInputDialog();</span>
+<span class="nc" id="L488">        td.setHeaderText(languageManager.getResource(&quot;emailDescription&quot;));</span>
+<span class="nc" id="L489">        td.showAndWait();</span>
+<span class="nc" id="L490">    }</span>
+
+    @Override
+    public void findCharacter(int id) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L494">        JsonObject object = characterLoad(id);</span>
+<span class="nc" id="L495">        update(object.get(&quot;name&quot;).getAsString(),id,&quot;character&quot;);</span>
+        try {
+<span class="nc bnc" id="L497" title="All 2 branches missed.">            if(thresholdListener.analyse(characterComics(id))){</span>
+<span class="nc" id="L498">                alertFactory.thresholdAlert();</span>
+            }
+<span class="nc" id="L500">        } catch (CharacterNotFoundException e) {</span>
+<span class="nc" id="L501">            alertFactory.normalErrorAlert(&quot;this character's comic record is not found&quot;);</span>
+<span class="nc" id="L502">        }</span>
+<span class="nc" id="L503">        viewFactory.buildCharacter(object);</span>
+<span class="nc" id="L504">    }</span>
+
+    @Override
+    public void findComic(int id) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L508">        JsonObject object = comicLoad(id);</span>
+<span class="nc" id="L509">        update(object.get(&quot;title&quot;).getAsString(),id,&quot;character&quot;);</span>
+<span class="nc" id="L510">        viewFactory.buildComic(comicLoad(id));</span>
+<span class="nc" id="L511">    }</span>
+
+    @Override
+    public void clearCache() {
+<span class="nc" id="L515">        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, languageManager.getResource(&quot;clearCacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L516">        alert.setTitle(languageManager.getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L517">        alert.showAndWait();</span>
+<span class="nc bnc" id="L518" title="All 2 branches missed.">        if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L519">            dBmanager.clearCache();</span>
+        }
+<span class="nc" id="L521">    }</span>
+
+
+    @Override
+    public List&lt;Hyperlink&gt; getBreadcrumb() {
+<span class="nc" id="L526">        return breadcrumb.get();</span>
+    }
+
+    @Override
+    public DBmanager getDBManager(){
+<span class="nc" id="L531">        return this.dBmanager;</span>
+    }
+
+    @Override
+    public void setLanguage(String language) throws IOException {
+<span class="nc" id="L536">        languageManager.setResources(language);</span>
+<span class="nc" id="L537">        viewFactory.refresh();</span>
+<span class="nc" id="L538">    }</span>
+
+    @Override
+    public String getResource(String key){
+<span class="nc" id="L542">        return languageManager.getResource(key);</span>
+    }
+
+    @Override
+    public List&lt;String&gt; getLanguages() {
+<span class="nc" id="L547">        return languageManager.getLanguages();</span>
+    }
+
+    @Override
+    public AlertFactory getAlertFactory() {
+<span class="nc" id="L552">        return this.alertFactory;</span>
+    }
+
+    public void update(String name, int id, String type){
+        //System.out.println(&quot;build link &quot;+ name + type);
+<span class="nc" id="L557">        Hyperlink link = new Hyperlink();</span>
+<span class="nc" id="L558">        link.setText(name);</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">        if (type == &quot;comic&quot;) {</span>
+<span class="nc" id="L560">            link.setOnAction((ActionEvent e) -&gt; {</span>
+                try {
+<span class="nc" id="L562">                    findComic(id);</span>
+<span class="nc" id="L563">                } catch (NoSuchAlgorithmException noSuchAlgorithmException) {</span>
+<span class="nc" id="L564">                    noSuchAlgorithmException.printStackTrace();</span>
+<span class="nc" id="L565">                } catch (IOException ioException) {</span>
+<span class="nc" id="L566">                    ioException.printStackTrace();</span>
+<span class="nc" id="L567">                }</span>
+<span class="nc" id="L568">            });</span>
+        }else{
+<span class="nc" id="L570">            link.setOnAction((ActionEvent e) -&gt; {</span>
+                try {
+<span class="nc" id="L572">                    findCharacter(id);</span>
+<span class="nc" id="L573">                } catch (IOException ioException) {</span>
+<span class="nc" id="L574">                    ioException.printStackTrace();</span>
+<span class="nc" id="L575">                } catch (NoSuchAlgorithmException noSuchAlgorithmException) {</span>
+<span class="nc" id="L576">                    noSuchAlgorithmException.printStackTrace();</span>
+<span class="nc" id="L577">                }</span>
+<span class="nc" id="L578">            });</span>
+        }
+<span class="nc" id="L580">        this.breadcrumb.update(link);</span>
+<span class="nc" id="L581">    }</span>
+    public ViewFactory getFactory(){
+<span class="nc" id="L583">        return viewFactory;</span>
+    }
+    public LanguageManager getLanguageManager(){
+<span class="nc" id="L586">        return languageManager;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

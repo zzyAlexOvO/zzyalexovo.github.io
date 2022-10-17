@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Routes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model.utils</a> &gt; <span class="el_source">Routes.java</span></div><h1>Routes.java</h1><pre class="source lang-java linenums">package app.model.utils;
+
+import app.model.HttpHandler;
+
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
+
+<span class="nc" id="L9">public class Routes {</span>
+    public HttpResponse search(String pattern, String ts, String publicKey, String hash) {
+        HttpResponse response;
+<span class="nc bnc" id="L12" title="All 4 branches missed.">        if (pattern == null || pattern.isEmpty()){</span>
+<span class="nc" id="L13">            response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/characters?ts=%s&amp;apikey=%s&amp;hash=%s&quot;,ts,publicKey,hash));</span>
+        }else {
+<span class="nc" id="L15">            response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/characters?nameStartsWith=%s&amp;ts=%s&amp;apikey=%s&amp;hash=%s&quot;, pattern, ts, publicKey, hash));</span>
+        }
+<span class="nc" id="L17">        return response;</span>
+    }
+    public HttpResponse character(int id, String ts, String publicKey, String hash){
+<span class="nc" id="L20">        HttpResponse response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/characters/%d?ts=%s&amp;apikey=%s&amp;hash=%s&quot;,id, ts,publicKey,hash));</span>
+<span class="nc" id="L21">        return response;</span>
+    }
+    public HttpResponse character(String name, String ts, String publicKey, String hash){
+<span class="nc" id="L24">        HttpResponse response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/characters?name=%s&amp;ts=%s&amp;apikey=%s&amp;hash=%s&quot;,name, ts,publicKey,hash));</span>
+<span class="nc" id="L25">        return response;</span>
+    }
+    public HttpResponse characterComics(int id, String ts, String publicKey, String hash){
+<span class="nc" id="L28">        HttpResponse response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/characters/%d/comics?ts=%s&amp;apikey=%s&amp;hash=%s&quot;,id, ts,publicKey,hash));</span>
+<span class="nc" id="L29">        return response;</span>
+    }
+    public HttpResponse comic(int id, String ts, String publicKey, String hash){
+<span class="nc" id="L32">        HttpResponse response = HttpHandler.getRequest(String.format(&quot;https://gateway.marvel.com:443/v1/public/comics/%d?ts=%s&amp;apikey=%s&amp;hash=%s&quot;,id, ts,publicKey,hash));</span>
+<span class="nc" id="L33">        return response;</span>
+    }
+    public HttpResponse email(String token, String from, String to, String subject, String content){
+<span class="nc" id="L36">        Map&lt;String,String&gt; header = new HashMap&lt;&gt;(){{</span>
+<span class="nc" id="L37">            put(&quot;Authorization&quot;,&quot;Bearer &quot; + token);</span>
+<span class="nc" id="L38">            put(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L39">        }};</span>
+<span class="nc" id="L40">        String body = String.format(&quot;{\&quot;personalizations\&quot;: [{\&quot;to\&quot;: [{\&quot;email\&quot;: \&quot;%s\&quot;}]}],\&quot;from\&quot;: {\&quot;email\&quot;: \&quot;%s\&quot;},\&quot;subject\&quot;: \&quot;%s\&quot;,\&quot;content\&quot;: [{\&quot;type\&quot;: \&quot;text/html\&quot;, \&quot;value\&quot;: \&quot;%s\&quot;}]}&quot;,to,from,subject,content);</span>
+<span class="nc" id="L41">        System.out.println(&quot;Content: &quot; + content);</span>
+<span class="nc" id="L42">        HttpResponse response = HttpHandler.postRequest(header,body,&quot;https://api.sendgrid.com/v3/mail/send&quot;);</span>
+<span class="nc" id="L43">        return response;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

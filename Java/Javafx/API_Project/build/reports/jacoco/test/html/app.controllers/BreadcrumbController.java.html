@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BreadcrumbController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.controllers</a> &gt; <span class="el_source">BreadcrumbController.java</span></div><h1>BreadcrumbController.java</h1><pre class="source lang-java linenums">package app.controllers;
+
+import app.Model.DBmanager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
+
+<span class="nc" id="L19">public class BreadcrumbController extends ControllerImpl{</span>
+    public class item{
+        private String name;
+        private String type;
+        private int id;
+<span class="nc" id="L24">        public item(String name,String type, int id){</span>
+<span class="nc" id="L25">            this.name = name;</span>
+<span class="nc" id="L26">            this.type = type;</span>
+<span class="nc" id="L27">            this.id = id;</span>
+<span class="nc" id="L28">        }</span>
+
+        public String getName() {
+<span class="nc" id="L31">            return name;</span>
+        }
+
+        public String getType() {
+<span class="nc" id="L35">            return type;</span>
+        }
+
+        public int getId() {
+<span class="nc" id="L39">            return id;</span>
+        }
+    }
+    public void init(){
+<span class="nc" id="L43">        TableView table = (TableView) scene.lookup(&quot;#table&quot;);</span>
+
+<span class="nc" id="L45">        List&lt;String[]&gt; itemList = engine.getDBManager().listItems();</span>
+<span class="nc" id="L46">        ObservableList&lt;item&gt; tvObservableList = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        for ( String[] entry: itemList){</span>
+<span class="nc" id="L48">            tvObservableList.add(new item(entry[0],entry[1],Integer.parseInt(entry[2])));</span>
+<span class="nc" id="L49">        }</span>
+<span class="nc" id="L50">        table.setItems(tvObservableList);</span>
+<span class="nc" id="L51">        TableColumn&lt;item, String&gt; col1 = new TableColumn&lt;&gt;(&quot;type&quot;);</span>
+<span class="nc" id="L52">        col1.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;type&quot;));</span>
+<span class="nc" id="L53">        TableColumn&lt;item, String&gt; col2 = new TableColumn&lt;&gt;(&quot;name&quot;);</span>
+<span class="nc" id="L54">        col2.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;name&quot;));</span>
+<span class="nc" id="L55">        table.getColumns().addAll(col1,col2);</span>
+
+<span class="nc" id="L57">        TableColumn&lt;item, Void&gt; colBtn = new TableColumn(&quot;link&quot;);</span>
+
+<span class="nc" id="L59">        Callback&lt;TableColumn&lt;item, Void&gt;, TableCell&lt;item, Void&gt;&gt; cellFactory = new Callback&lt;&gt;() {</span>
+            @Override
+            public TableCell&lt;item, Void&gt; call(final TableColumn&lt;item, Void&gt; param) {
+<span class="nc" id="L62">                final TableCell&lt;item, Void&gt; cell = new TableCell&lt;&gt;() {</span>
+
+<span class="nc" id="L64">                    private final Button btn = new Button(&quot;view&quot;);</span>
+
+                    {
+<span class="nc" id="L67">                        btn.setOnAction((ActionEvent event) -&gt; {</span>
+<span class="nc" id="L68">                            item data = getTableView().getItems().get(getIndex());</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">                            if (data.type.equals(&quot;character&quot;)){</span>
+                                try {
+<span class="nc" id="L71">                                    engine.findCharacter(data.id);</span>
+<span class="nc" id="L72">                                } catch (IOException e) {</span>
+<span class="nc" id="L73">                                    e.printStackTrace();</span>
+<span class="nc" id="L74">                                } catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L75">                                    e.printStackTrace();</span>
+<span class="nc" id="L76">                                }</span>
+                            }else{
+                                try {
+<span class="nc" id="L79">                                    engine.findComic(data.id);</span>
+<span class="nc" id="L80">                                } catch (IOException e) {</span>
+<span class="nc" id="L81">                                    e.printStackTrace();</span>
+<span class="nc" id="L82">                                } catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L83">                                    e.printStackTrace();</span>
+<span class="nc" id="L84">                                }</span>
+                            }
+<span class="nc" id="L86">                        });</span>
+<span class="nc" id="L87">                    }</span>
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+<span class="nc" id="L91">                        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                        if (empty) {</span>
+<span class="nc" id="L93">                            setGraphic(null);</span>
+                        } else {
+<span class="nc" id="L95">                            setGraphic(btn);</span>
+                        }
+<span class="nc" id="L97">                    }</span>
+                };
+<span class="nc" id="L99">                return cell;</span>
+            }
+        };
+
+<span class="nc" id="L103">        colBtn.setCellFactory(cellFactory);</span>
+
+<span class="nc" id="L105">        table.getColumns().add(colBtn);</span>
+<span class="nc" id="L106">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

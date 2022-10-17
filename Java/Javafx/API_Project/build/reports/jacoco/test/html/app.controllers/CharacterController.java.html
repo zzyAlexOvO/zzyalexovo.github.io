@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CharacterController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.controllers</a> &gt; <span class="el_source">CharacterController.java</span></div><h1>CharacterController.java</h1><pre class="source lang-java linenums">package app.controllers;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
+<span class="nc" id="L20">public class CharacterController extends ControllerImpl{</span>
+    private String reportContent;
+    private JsonObject object;
+    @FXML
+    Label name;
+    @FXML
+    Button back;
+    @FXML
+    Label comics;
+    @FXML
+    Button sendReport;
+    @FXML
+    ImageView image;
+    @FXML
+    TableView table;
+    public class Comic{
+        private String name;
+        private int id;
+<span class="nc" id="L38">        public Comic(int id, String name){</span>
+<span class="nc" id="L39">            this.name = name;</span>
+<span class="nc" id="L40">            this.id = id;</span>
+<span class="nc" id="L41">        }</span>
+
+        public String getName() {
+<span class="nc" id="L44">            return name;</span>
+        }
+
+        public int getId() {
+<span class="nc" id="L48">            return id;</span>
+        }
+    }
+
+    @Override
+    public void setText(){
+<span class="nc" id="L54">        name.setText(engine.getResource(name.getText()));</span>
+<span class="nc" id="L55">        back.setText(engine.getResource(back.getText()));</span>
+<span class="nc" id="L56">        comics.setText(engine.getResource(comics.getText()));</span>
+<span class="nc" id="L57">        sendReport.setText(engine.getResource(sendReport.getText()));</span>
+<span class="nc" id="L58">    }</span>
+    public void setup(JsonObject object){
+<span class="nc" id="L60">        initLanguages();</span>
+<span class="nc" id="L61">        setMenuText();</span>
+<span class="nc" id="L62">        setText();</span>
+<span class="nc" id="L63">        this.object = object;</span>
+<span class="nc" id="L64">        name.setText(object.get(&quot;name&quot;).getAsString());</span>
+
+<span class="nc" id="L66">        JsonObject thumbnail = object.get(&quot;thumbnail&quot;).getAsJsonObject();</span>
+<span class="nc" id="L67">        String imagePath = thumbnail.get(&quot;path&quot;).getAsString() + &quot;.&quot; + thumbnail.get(&quot;extension&quot;).getAsString();</span>
+<span class="nc" id="L68">        System.out.println(&quot;image path: &quot; + imagePath);</span>
+
+<span class="nc" id="L70">        Task task = new Task&lt;&gt;() {</span>
+            public Object call() {
+<span class="nc" id="L72">                image.setImage(new Image(imagePath));</span>
+<span class="nc" id="L73">                return null;</span>
+            }
+        };
+<span class="nc" id="L76">        new Thread(task).start();</span>
+
+<span class="nc" id="L78">        JsonArray comicArray= object.get(&quot;comics&quot;).getAsJsonObject().get(&quot;items&quot;).getAsJsonArray();</span>
+
+<span class="nc" id="L80">        ObservableList&lt;Comic&gt; tvObservableList = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        for (JsonElement comic: comicArray){</span>
+<span class="nc" id="L82">            String url = comic.getAsJsonObject().get(&quot;resourceURI&quot;).getAsString();</span>
+<span class="nc" id="L83">            String[] list = url.split(&quot;/&quot;);</span>
+<span class="nc" id="L84">            int id = Integer.parseInt(list[list.length - 1]);</span>
+<span class="nc" id="L85">            tvObservableList.add(new Comic(id,comic.getAsJsonObject().get(&quot;name&quot;).getAsString()));</span>
+<span class="nc" id="L86">        }</span>
+
+<span class="nc" id="L88">        table.setItems(tvObservableList);</span>
+<span class="nc" id="L89">        TableColumn&lt;Comic, String&gt; col1 = new TableColumn&lt;&gt;(engine.getResource(&quot;name&quot;));</span>
+<span class="nc" id="L90">        col1.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;name&quot;));</span>
+<span class="nc" id="L91">        table.getColumns().addAll(col1);</span>
+
+<span class="nc" id="L93">        TableColumn&lt;Comic, Void&gt; colBtn = new TableColumn(engine.getResource(&quot;detail&quot;));</span>
+
+<span class="nc" id="L95">        Callback&lt;TableColumn&lt;Comic, Void&gt;, TableCell&lt;Comic, Void&gt;&gt; cellFactory = new Callback&lt;&gt;() {</span>
+            @Override
+            public TableCell&lt;Comic, Void&gt; call(final TableColumn&lt;Comic, Void&gt; param) {
+<span class="nc" id="L98">                final TableCell&lt;Comic, Void&gt; cell = new TableCell&lt;&gt;() {</span>
+
+<span class="nc" id="L100">                    private final Button btn = new Button(engine.getResource(&quot;view&quot;));</span>
+
+                    {
+<span class="nc" id="L103">                        btn.setOnAction((ActionEvent event) -&gt; {</span>
+<span class="nc" id="L104">                            Comic data = getTableView().getItems().get(getIndex());</span>
+                            try {
+<span class="nc" id="L106">                                engine.getDBManager().insertItem(&quot;comic&quot;,data.name,data.id);</span>
+<span class="nc" id="L107">                                engine.findComic(data.id);</span>
+<span class="nc" id="L108">                            } catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L109">                                e.printStackTrace();</span>
+<span class="nc" id="L110">                            } catch (IOException e) {</span>
+<span class="nc" id="L111">                                e.printStackTrace();</span>
+<span class="nc" id="L112">                            }</span>
+<span class="nc" id="L113">                        });</span>
+<span class="nc" id="L114">                    }</span>
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+<span class="nc" id="L118">                        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                        if (empty) {</span>
+<span class="nc" id="L120">                            setGraphic(null);</span>
+                        } else {
+<span class="nc" id="L122">                            setGraphic(btn);</span>
+                        }
+<span class="nc" id="L124">                    }</span>
+                };
+<span class="nc" id="L126">                return cell;</span>
+            }
+        };
+
+<span class="nc" id="L130">        colBtn.setCellFactory(cellFactory);</span>
+
+<span class="nc" id="L132">        table.getColumns().add(colBtn);</span>
+
+<span class="nc" id="L134">    }</span>
+    public void sendReport() throws IOException {
+<span class="nc" id="L136">        reportContent = &quot;&lt;h1&gt;name: &quot; + object.get(&quot;name&quot;).getAsString() + &quot;&lt;/h1&gt;&quot;+ &quot;&lt;h1&gt;comics: &lt;/h1&gt;&quot; + &quot;&lt;p&gt;&quot;;</span>
+<span class="nc" id="L137">        JsonArray comicArray= object.get(&quot;comics&quot;).getAsJsonObject().get(&quot;items&quot;).getAsJsonArray();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        for (JsonElement comic: comicArray){</span>
+<span class="nc" id="L139">            reportContent += comic.getAsJsonObject().get(&quot;name&quot;).getAsString() + &quot;;&quot; + &quot;&lt;br&gt;&quot;;</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">        reportContent += &quot;&lt;/p&gt;&quot; + &quot;&lt;h1&gt;stories: &lt;/h1&gt;&quot; + &quot;&lt;p&gt;&quot;;</span>
+<span class="nc" id="L142">        JsonArray storyArray = object.get(&quot;stories&quot;).getAsJsonObject().get(&quot;items&quot;).getAsJsonArray();</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        for (JsonElement story: storyArray){</span>
+<span class="nc" id="L144">            reportContent += story.getAsJsonObject().get(&quot;name&quot;).getAsString() + &quot;;&quot; + &quot;&lt;br&gt;&quot;;</span>
+<span class="nc" id="L145">        }</span>
+<span class="nc" id="L146">        reportContent += &quot;&lt;/p&gt;&quot; + &quot;&lt;h1&gt;events: &lt;/h1&gt;&quot; + &quot;&lt;p&gt;&quot;;</span>
+<span class="nc" id="L147">        JsonArray eventArray = object.get(&quot;events&quot;).getAsJsonObject().get(&quot;items&quot;).getAsJsonArray();</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (eventArray.isEmpty()){</span>
+<span class="nc" id="L149">            reportContent += &quot;null&quot;;</span>
+        }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        for (JsonElement event: eventArray){</span>
+<span class="nc" id="L152">            reportContent += event.getAsJsonObject().get(&quot;name&quot;).getAsString() + &quot;;&quot;  + &quot;&lt;br&gt;&quot;;</span>
+<span class="nc" id="L153">        }</span>
+<span class="nc" id="L154">        reportContent += &quot;&lt;/p&gt;&quot;;</span>
+<span class="nc" id="L155">        engine.sendReport(reportContent);</span>
+<span class="nc" id="L156">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

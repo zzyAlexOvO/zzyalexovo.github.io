@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.DatabaseTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-06-17T00:44:45" hostname="DESKTOP-T5QTU6V" time="1.251">
+  <properties/>
+  <testcase name="clearCacheTest()" classname="app.DatabaseTest" time="0.44"/>
+  <testcase name="breadcrumbTest()" classname="app.DatabaseTest" time="0.244"/>
+  <testcase name="updateCacheTest()" classname="app.DatabaseTest" time="0.325"/>
+  <testcase name="checkCacheTest()" classname="app.DatabaseTest" time="0.24"/>
+  <system-out><![CDATA[Removed existing DB file.
+A new database has been created.
+Created tables
+INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+Removed existing DB file.
+A new database has been created.
+Created tables
+Removed existing DB file.
+A new database has been created.
+Created tables
+INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+UPDATE caches
+SET info = ?
+WHERE type = ? and id = ? and name = ?;
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+Removed existing DB file.
+A new database has been created.
+Created tables
+INSERT INTO caches (type, id, name, info)
+VALUES(?,?,?,?);
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and id = ?;
+
+SELECT info
+FROM caches
+WHERE type = ? and name = ?;
+
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

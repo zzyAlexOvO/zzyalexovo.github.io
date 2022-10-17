@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.modelTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2022-06-17T00:44:44" hostname="DESKTOP-T5QTU6V" time="0.975">
+  <properties/>
+  <testcase name="languageTest()" classname="app.modelTest" time="0.176"/>
+  <testcase name="characterTest()" classname="app.modelTest" time="0.056"/>
+  <testcase name="comicTest()" classname="app.modelTest" time="0.005"/>
+  <testcase name="findComicTest()" classname="app.modelTest" time="0.71"/>
+  <testcase name="bgmTest()" classname="app.modelTest" time="0.004"/>
+  <testcase name="thresholdUnitTest()" classname="app.modelTest" time="0.002"/>
+  <testcase name="charactersTest()" classname="app.modelTest" time="0.005"/>
+  <testcase name="onlineStartTest()" classname="app.modelTest" time="0.005"/>
+  <testcase name="findCharacterTest()" classname="app.modelTest" time="0.007"/>
+  <system-out><![CDATA[set language to english
+no cache hit
+2022-06-17T10:44:45.13185660010:00
+set language to english
+find character
+no cache hit
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

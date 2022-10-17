@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControllerImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.controllers</a> &gt; <span class="el_source">ControllerImpl.java</span></div><h1>ControllerImpl.java</h1><pre class="source lang-java linenums">package app.controllers;
+
+import app.model.Engine;
+import com.google.gson.JsonArray;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+
+import java.io.IOException;
+import java.util.List;
+
+<span class="nc" id="L15">public class ControllerImpl implements Controller{</span>
+    protected Scene scene;
+    protected Engine engine;
+    @FXML
+    Menu music;
+    @FXML
+    MenuItem play;
+    @FXML
+    MenuItem pause;
+    @FXML
+    Menu language;
+    @Override
+    public void setScene(Scene scene) {
+<span class="nc" id="L28">        this.scene = scene;</span>
+<span class="nc" id="L29">    }</span>
+
+    @Override
+    public void setEngine(Engine engine) {
+<span class="nc" id="L33">        this.engine = engine;</span>
+<span class="nc" id="L34">    }</span>
+
+    @Override
+    public void backEvent() throws IOException {
+<span class="nc" id="L38">        engine.searchLoad();</span>
+<span class="nc" id="L39">    }</span>
+    public void pauseMusic(){
+<span class="nc" id="L41">        engine.pauseMusic();</span>
+<span class="nc" id="L42">    }</span>
+    public void playMusic(){
+<span class="nc" id="L44">        engine.playMusic();</span>
+<span class="nc" id="L45">    }</span>
+
+    @Override
+<span class="nc" id="L48">    public void setup(JsonArray object, String label) { }</span>
+
+    @Override
+    public void setText() {
+<span class="nc" id="L52">    }</span>
+
+    @Override
+    public void setMenuText(){
+<span class="nc" id="L56">        music.setText(engine.getResource(music.getText()));</span>
+<span class="nc" id="L57">        play.setText(engine.getResource(play.getText()));</span>
+<span class="nc" id="L58">        pause.setText(engine.getResource(pause.getText()));</span>
+<span class="nc" id="L59">        language.setText(engine.getResource(language.getText()));</span>
+<span class="nc" id="L60">    }</span>
+
+    @Override
+    public void setLanguage(String language) throws IOException {
+<span class="nc" id="L64">        engine.setLanguage(language);</span>
+<span class="nc" id="L65">    }</span>
+
+    public void initLanguages(){
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (String l:engine.getLanguages()){</span>
+<span class="nc" id="L69">            MenuItem item = new MenuItem(l);</span>
+<span class="nc" id="L70">            item.setOnAction((ActionEvent event) -&gt; {</span>
+                try {
+<span class="nc" id="L72">                    engine.setLanguage(l);</span>
+<span class="nc" id="L73">                } catch (IOException e) {</span>
+<span class="nc" id="L74">                    e.printStackTrace();</span>
+<span class="nc" id="L75">                }</span>
+<span class="nc" id="L76">            });</span>
+<span class="nc" id="L77">            System.out.println(&quot;item added &quot;+l);</span>
+<span class="nc" id="L78">            language.getItems().add(item);</span>
+<span class="nc" id="L79">        }</span>
+<span class="nc" id="L80">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

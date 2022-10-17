@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DummyInEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">app.model</a> &gt; <span class="el_source">DummyInEngine.java</span></div><h1>DummyInEngine.java</h1><pre class="source lang-java linenums">package app.model;
+
+import app.model.exception.CharacterNotFoundException;
+import app.view.ViewFactory;
+import app.model.utils.Hash;
+import app.model.utils.Routes;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.http.HttpResponse;
+import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class DummyInEngine extends DummyEngine {
+    public final String publicKey;
+    public final String privateKey;
+
+    private Routes routes;
+
+    public DummyInEngine(Stage stage, Routes routes, String publicKey, String privateKey){
+<span class="nc" id="L33">        super(stage);</span>
+<span class="nc" id="L34">        this.routes = routes;</span>
+<span class="nc" id="L35">        this.publicKey = publicKey;</span>
+<span class="nc" id="L36">        this.privateKey = privateKey;</span>
+<span class="nc" id="L37">    }</span>
+
+    public Map&lt;Integer,String&gt; characters(String pattern) throws NoSuchAlgorithmException {
+<span class="nc" id="L40">        String ts = OffsetDateTime.now().toString();</span>
+<span class="nc" id="L41">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="nc" id="L42">        System.out.println(ts);</span>
+<span class="nc" id="L43">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+<span class="nc" id="L44">        HttpResponse response = routes.search(pattern,ts,publicKey,hash);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="nc" id="L46">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="nc" id="L47">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L48">            Map&lt;Integer,String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            for (JsonElement object:list){</span>
+<span class="nc" id="L50">                JsonObject character = object.getAsJsonObject();</span>
+<span class="nc" id="L51">                String name = character.get(&quot;name&quot;).getAsString();</span>
+<span class="nc" id="L52">                map.put(character.get(&quot;id&quot;).getAsInt(),name);</span>
+<span class="nc" id="L53">            }</span>
+<span class="nc" id="L54">            return map;</span>
+        }else{
+<span class="nc" id="L56">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L57">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L58">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L59">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L61">        return null;</span>
+    }
+
+    public JsonObject characterLoad(int id) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L65">        String ts = OffsetDateTime.now().toString();</span>
+<span class="nc" id="L66">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="nc" id="L67">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="nc" id="L69">        HttpResponse response = routes.character(id,ts,publicKey,hash);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="nc" id="L71">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="nc" id="L72">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L73">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="nc" id="L74">            return object;</span>
+        }else{
+<span class="nc" id="L76">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L77">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L78">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L79">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L81">        return null;</span>
+    }
+
+    public JsonObject characterLoad(String name) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L85">        String ts = OffsetDateTime.now().toString();</span>
+<span class="nc" id="L86">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="nc" id="L87">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="nc" id="L89">        String new_name = name.replace(&quot; &quot;,&quot;%20&quot;);</span>
+<span class="nc" id="L90">        HttpResponse response = routes.character(new_name,ts,publicKey,hash);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="nc" id="L92">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="nc" id="L93">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L94">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="nc" id="L95">            return object;</span>
+        }else{
+<span class="nc" id="L97">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L98">            alert.setTitle(&quot;Sorry&quot;);</span>
+<span class="nc" id="L99">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L100">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L102">        return null;</span>
+    }
+
+    public JsonObject comicLoad(int id) throws NoSuchAlgorithmException, IOException {
+<span class="nc" id="L106">        String ts = OffsetDateTime.now().toString();</span>
+<span class="nc" id="L107">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="nc" id="L108">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+
+<span class="nc" id="L110">        HttpResponse response = routes.comic(id,ts,publicKey,hash);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="nc" id="L112">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="nc" id="L113">            JsonArray list = jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;results&quot;).getAsJsonArray();</span>
+<span class="nc" id="L114">            JsonObject object = list.get(0).getAsJsonObject();</span>
+<span class="nc" id="L115">            return object;</span>
+        }else{
+<span class="nc" id="L117">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L118">            alert.setTitle(super.getLanguageManager().getResource(&quot;Sorry&quot;));</span>
+<span class="nc" id="L119">            alert.setContentText(response.body().toString());</span>
+<span class="nc" id="L120">            alert.showAndWait();</span>
+        }
+<span class="nc" id="L122">        return null;</span>
+    }
+
+    @Override
+    public void findCharacter(int id) throws IOException, NoSuchAlgorithmException {
+<span class="nc" id="L127">        System.out.println(&quot;find character&quot;);</span>
+        JsonObject object;
+<span class="nc" id="L129">        String result = super.getDBManager().checkCache(&quot;character&quot;,id);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (result == null){</span>
+<span class="nc" id="L131">            System.out.println(&quot;no cache hit&quot;);</span>
+<span class="nc" id="L132">            object = characterLoad(id);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (object == null){</span>
+<span class="nc" id="L134">                return;</span>
+            }
+<span class="nc" id="L136">            super.getDBManager().insertCache(&quot;character&quot;,id,object.get(&quot;name&quot;).getAsString(),object.toString());</span>
+        }else{
+<span class="nc" id="L138">            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, super.getLanguageManager().getResource(&quot;cacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L139">            alert.setTitle(super.getLanguageManager().getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L140">            alert.showAndWait();</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L142">                object = new JsonParser().parse(result).getAsJsonObject();</span>
+            }else{
+<span class="nc" id="L144">                object = characterLoad(id);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                if (object == null){</span>
+<span class="nc" id="L146">                    return;</span>
+                }
+<span class="nc" id="L148">                super.getDBManager().updateCache(&quot;character&quot;,id,object.get(&quot;name&quot;).getAsString(),object.toString());</span>
+            }
+        }
+<span class="nc" id="L151">        update(object.get(&quot;name&quot;).getAsString(),id,&quot;character&quot;);</span>
+        try {
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            if(thresholdListener.analyse(characterComics(id))){</span>
+<span class="nc" id="L154">                alertFactory.thresholdAlert();</span>
+            }
+<span class="nc" id="L156">        } catch (CharacterNotFoundException e) {</span>
+<span class="nc" id="L157">            alertFactory.normalErrorAlert(&quot;this character's comic record is not found&quot;);</span>
+<span class="nc" id="L158">        }</span>
+<span class="nc" id="L159">        super.getFactory().buildCharacter(object);</span>
+<span class="nc" id="L160">    }</span>
+
+    public int characterComics(int id) throws NoSuchAlgorithmException, CharacterNotFoundException {
+<span class="nc" id="L163">        String ts = OffsetDateTime.now().toString();</span>
+<span class="nc" id="L164">        ts = ts.replace(&quot;+&quot;,&quot;&quot;);</span>
+<span class="nc" id="L165">        String hash = Hash.md5(ts,privateKey,publicKey);</span>
+<span class="nc" id="L166">        HttpResponse response = routes.characterComics(id,ts,publicKey,hash);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        if(response.statusCode() == 200){</span>
+<span class="nc" id="L168">            JsonObject jsonObject = new JsonParser().parse(response.body().toString()).getAsJsonObject();</span>
+<span class="nc" id="L169">            return jsonObject.get(&quot;data&quot;).getAsJsonObject().get(&quot;total&quot;).getAsInt();</span>
+        }else{
+<span class="nc" id="L171">            alertFactory.normalErrorAlert(response.body().toString());</span>
+<span class="nc" id="L172">            throw new CharacterNotFoundException();</span>
+        }
+    }
+
+    @Override
+    public void findComic(int id) throws IOException, NoSuchAlgorithmException {
+        JsonObject object;
+<span class="nc" id="L179">        String result = super.getDBManager().checkCache(&quot;comic&quot;,id);</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (result == null){</span>
+<span class="nc" id="L181">            System.out.println(&quot;no cache hit&quot;);</span>
+<span class="nc" id="L182">            object = comicLoad(id);</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">            if (object == null){</span>
+<span class="nc" id="L184">                return;</span>
+            }
+<span class="nc" id="L186">            super.getDBManager().insertCache(&quot;comic&quot;,id,object.get(&quot;title&quot;).getAsString(),object.toString());</span>
+        }else{
+<span class="nc" id="L188">            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, super.getLanguageManager().getResource(&quot;cacheConfirmation&quot;), ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L189">            alert.setTitle(super.getLanguageManager().getResource(&quot;cacheHit&quot;));</span>
+<span class="nc" id="L190">            alert.showAndWait();</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            if(alert.getResult() == ButtonType.YES){</span>
+<span class="nc" id="L192">                object = new JsonParser().parse(result).getAsJsonObject();</span>
+            }else{
+<span class="nc" id="L194">                object = comicLoad(id);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">                if (object == null){</span>
+<span class="nc" id="L196">                    return;</span>
+                }
+<span class="nc" id="L198">                super.getDBManager().updateCache(&quot;comic&quot;,id,object.get(&quot;title&quot;).getAsString(),object.toString());</span>
+            }
+        }
+<span class="nc" id="L201">        update(object.get(&quot;title&quot;).getAsString(),id,&quot;comic&quot;);</span>
+<span class="nc" id="L202">        super.getFactory().buildComic(object);</span>
+<span class="nc" id="L203">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
