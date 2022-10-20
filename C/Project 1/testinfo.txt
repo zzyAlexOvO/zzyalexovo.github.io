@@ -1,0 +1,11 @@
+How to run: simply make test , or even "bash test.sh"
+
+To specify:
+Accept_exact_same_time: Test if the train arriving at the exact same time as given is acceptable.
+Argv_missed: Test if program output proper message when an argument is missing.
+invalid_time: Test if program skip data with invalid time given.
+no_matching: Test if program output proper message when no suitable train is found.
+over_day: Test when the expected time is on the next day.
+several_stations: Test when there are multiple different stations in the table.
+single_station1: Basic.
+space_between_stations: Test when there is space in the name of stations
