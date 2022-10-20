@@ -1,0 +1,1 @@
+test could be run through "make run_test", however the overall test result will stored in the OwnTests/result.txt file, please do check it!

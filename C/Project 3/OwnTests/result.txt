@@ -1,0 +1,7 @@
+basicTest succeed
+secBasicTest succeed
+smallBlockTest succeed
+reallocTest succeed
+hugeTest succeed
+MaxNodeAndFreeTest failed
+MaxNodeTest failed
